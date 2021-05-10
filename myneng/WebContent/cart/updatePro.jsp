@@ -1,0 +1,34 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import = "cartBoard.BoardDBBean" %>
+<%@ page import = "cartBoard.BoardDataBean" %>
+<%@ page import = "java.sql.Timestamp" %>
+
+<% request.setCharacterEncoding("UTF-8");%>
+
+<jsp:useBean id="article" scope="page" class="cartBoard.BoardDataBean" />
+<jsp:setProperty name="article" property="*"/>
+
+<%
+ 
+    String pageNum = request.getParameter("pageNum");
+	String num = request.getParameter("num");
+	System.out.println(num +"  "+ pageNum);
+
+	BoardDBBean dbPro = new BoardDBBean();
+    int check = dbPro.updateArticle(article);
+	System.out.println(num +"  "+ pageNum +"   "+ check);
+    if(check==1){
+%>
+	  <meta http-equiv="Refresh" content="0;url=content.jsp?num=<%=num %>&pageNum=<%=pageNum%>&comment_listNum=0" >
+<% }else{%>
+      <script language="JavaScript">      
+      <!--      
+        alert("비밀번호가 맞지 않습니다");
+        history.go(-1);
+      -->
+     </script>
+<%
+    }
+ %>  
+
+ 
