@@ -4,7 +4,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<jsp:include page="menu.jsp"/>
 <title>Insert title here</title>
 </head>
 <body>

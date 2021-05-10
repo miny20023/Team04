@@ -12,7 +12,6 @@
  
     String pageNum = request.getParameter("pageNum");
 	String num = request.getParameter("num");
-	System.out.println(num +"  "+ pageNum);
 
 	BoardDBBean dbPro = new BoardDBBean();
     int check = dbPro.updateArticle(article);

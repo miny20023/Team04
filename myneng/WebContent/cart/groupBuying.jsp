@@ -6,6 +6,7 @@
 <%@ page import = "java.text.SimpleDateFormat" %>
 <%@ include file = "color.jsp" %> 
 
+
 <%
 	int comment_listNum = 0;
 	int pageSize = 10;
@@ -33,11 +34,13 @@
 	
 	number = count - (currentPage-1) * pageSize;
 	
+	//String id = (String)session.getAttribute("memId");
 	String id = (String)session.getAttribute("memId");
 %>
     
 <html>
 <head>
+<jsp:include page="../menu.jsp"/>
 <title>게시판</title>
 <link href="style.css" rel="stylesheet" type="text/css">
 </head>
@@ -54,7 +57,7 @@
 					<%}
 					else
 					{%>
-						<a href="/myneng/tmp/loginForm.jsp">로그인</a>
+						<b1>로그인이 필요합니다.</b1>
 					<%} %>
 				</td>
 			</tr>

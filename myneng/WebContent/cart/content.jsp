@@ -6,6 +6,7 @@
 <%@ page import = "java.util.List" %>
 <html>
 <head>
+<jsp:include page="../menu.jsp"/>
 <title>게시판</title>
 <link href="style.css" rel="stylesheet" type="text/css">
 </head>
@@ -73,7 +74,6 @@
 	{
 		current_url = current_url +"?"+request.getQueryString();
 	}
-	System.out.println(current_url);
 %>
 
 <jsp:include page = "commentList.jsp">

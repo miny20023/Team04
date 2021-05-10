@@ -42,6 +42,7 @@
     
 <html>
 <head>
+<jsp:include page="../menu.jsp"/>
 <title>게시판</title>
 <link href="style.css" rel="stylesheet" type="text/css">
 </head>

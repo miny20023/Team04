@@ -52,7 +52,6 @@ public class CommentDBBean
 					dbRef = rs.getInt("ref");
 					dbRe_step = rs.getInt("re_step");
 					dbRe_level = rs.getInt("re_level");
-					System.out.println(dbRe_step);
 					sql = "select MAX(re_step) from "+tableNum+" where ref = "+dbRef;
 					pstmt = conn.prepareStatement(sql);
 					rs = pstmt.executeQuery();
@@ -116,7 +115,6 @@ public class CommentDBBean
 			{
 				dbRef = rs.getInt("ref");
 				dbRe_step = rs.getInt("re_step");
-				System.out.println(dbRef +""+ dbRe_step);
 				
 				sql = "delete from "+tableName+" where ref = "+dbRef+" and re_step="+dbRe_step;
 				pstmt = conn.prepareStatement(sql);
