@@ -17,8 +17,8 @@ public class ConnectionDAO
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 
 			String dbHost = "jdbc:oracle:thin:@masternull.iptime.org:1521:orcl";
-			String user = "java03";					// ÆÀ DB ID·Î º¯°æ
-			String pass = "java";					// ÆÀ DB PW·Î º¯°æ
+			String user = "team04";					// ÆÀ DB ID·Î º¯°æ
+			String pass = "team";					// ÆÀ DB PW·Î º¯°æ
 			conn = DriverManager.getConnection(dbHost, user, pass);
 		}
 		catch(Exception e)

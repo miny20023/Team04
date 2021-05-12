@@ -16,7 +16,7 @@ public class CommentDBBean
 		try {
 			if(comment_listNum == 0)
 			{
-			String tableNum = "comment_"+article.getNum();
+			String tableNum = "groupbuying_comment_"+article.getNum();
 			// table명 자리에 ? 넣고 pstmt로 받으면 ' 이게 들어가서 테이블명 부적합나옴
 			sql = "insert into "+tableNum+" values("+tableNum+"_seq.NEXTVAL,?,?,?,?,"+tableNum+"_seq.CURRVAL,?,?)";
 			conn = ConnectionDAO.getConnection();
@@ -33,7 +33,7 @@ public class CommentDBBean
 			else
 			{
 				conn = ConnectionDAO.getConnection();
-				String tableNum = "comment_"+article.getNum();
+				String tableNum = "groupbuying_comment_"+article.getNum();
 				//sql = "select "+tableNum+"_seq,ref,re_step,re_level,rownum from "+tableNum+" where rownum ="+comment_listNum;
 				sql = "select comment_id,comment_text,reg_date,ref,re_step,re_level,r "
 						+"from (select comment_id,comment_text,reg_date,ref,re_step,re_level,rownum r "
@@ -97,8 +97,8 @@ public class CommentDBBean
 	public int deleteArticle_comment(int num,int listNum, String id) throws Exception
 	{
 		int x = -1;
-		String seqName = "comment_"+num+"_seq";
-		String tableName = "comment_"+num;
+		String seqName = "groupbuying_comment_"+num+"_seq";
+		String tableName = "groupbuying_comment_"+num;
 		try 
 		{
 			conn = ConnectionDAO.getConnection();
@@ -160,9 +160,9 @@ public class CommentDBBean
 		int y = 0;
 		int x = 0;
 		String sql ="";
-		String tableName = "comment_"+tableNum;
+		String tableName = "groupbuying_comment_"+tableNum;
 		String seqName = tableName+"_seq";
-		String searchTable = "COMMENT_"+tableNum;
+		String searchTable = "GROUPBUYING_COMMENT_"+tableNum;
 		try
 		{
 			conn = ConnectionDAO.getConnection();
@@ -209,7 +209,7 @@ public class CommentDBBean
 	public List getArticles(int start,int end,int tableNum ) throws Exception
 	{
 		List articleList=null;
-		String tableName = "comment_"+tableNum;
+		String tableName = "groupbuying_comment_"+tableNum;
 		try
 		{
 			conn = ConnectionDAO.getConnection();

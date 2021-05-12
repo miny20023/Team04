@@ -17,7 +17,7 @@ public class BoardDBBean
 		String sql="";
 		try {
 			conn = ConnectionDAO.getConnection(); 
-			pstmt = conn.prepareStatement("select max(num) from board");
+			pstmt = conn.prepareStatement("select max(num) from groupbuying_board");
 			rs = pstmt.executeQuery();
 			if (rs.next()) 
 				number=rs.getInt(1)+1;	
@@ -39,8 +39,8 @@ public class BoardDBBean
 			}*/
 			if(sql.equals(""))
 			{
-				sql = "insert into board(num,writer,email,subject,passwd,reg_date,";
-				sql+="ref,re_step,re_level,content,ip) values(board_seq.NEXTVAL,?,?,?,?,?,?,?,?,?,?)";
+				sql = "insert into groupbuying_board(num,writer,email,subject,passwd,reg_date,";
+				sql+="ref,re_step,re_level,content,ip) values(groupbuying_board_seq.NEXTVAL,?,?,?,?,?,?,?,?,?,?)";
 					pstmt = conn.prepareStatement(sql);
 				pstmt.setString(1, article.getWriter());
 				pstmt.setString(2, article.getEmail());
@@ -69,7 +69,7 @@ public class BoardDBBean
 		try
 		{
 			conn = ConnectionDAO.getConnection();
-			pstmt = conn.prepareStatement("select count(*) from board");
+			pstmt = conn.prepareStatement("select count(*) from groupbuying_board");
 			rs = pstmt.executeQuery();
 			if(rs.next())
 			{
@@ -94,7 +94,7 @@ public class BoardDBBean
 		try 
 		{
 			conn = ConnectionDAO.getConnection();
-			pstmt = conn.prepareStatement("select count(*) from board where writer=?");
+			pstmt = conn.prepareStatement("select count(*) from groupbuying_board where writer=?");
 			pstmt.setString(1, id);
 			rs = pstmt.executeQuery();
 			if (rs.next()) 
@@ -120,7 +120,7 @@ public class BoardDBBean
 		try 
 		{
 			conn = ConnectionDAO.getConnection();
-			String sql = "select count(*) from board where " + col+ " like '%" + search+"%'";
+			String sql = "select count(*) from groupbuying_board where " + col+ " like '%" + search+"%'";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			if (rs.next()) 
@@ -149,7 +149,7 @@ public class BoardDBBean
 					"select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,r "+
 					"from (select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,rownum r " +
 					"from (select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount " +
-					"from board order by num desc) order by num desc ) where r >= ? and r <= ? ");
+					"from groupbuying_board order by num desc) order by num desc ) where r >= ? and r <= ? ");
 			pstmt.setInt(1, start);
 			pstmt.setInt(2, end);
 			
@@ -193,7 +193,7 @@ public class BoardDBBean
 					"select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,r "+
 					"from (select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,rownum r " +
 					"from (select * " +
-					"from board where writer=? order by reg_date desc) order by reg_date desc ) where r >= ? and r <= ? ");
+					"from groupbuying_board where writer=? order by reg_date desc) order by reg_date desc ) where r >= ? and r <= ? ");
 					pstmt.setString(1, id);
 					pstmt.setInt(2, start); 
 					pstmt.setInt(3, end); 
@@ -231,7 +231,7 @@ public class BoardDBBean
 					"select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,r "+
 					"from (select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount,rownum r " +
 					"from (select num,writer,email,subject,passwd,reg_date,ref,re_step,re_level,content,ip,readcount " +
-					"from board where "+col+" like '%"+search+"%' order by reg_date desc) order by reg_date desc ) where r >= ? and r <= ? ");
+					"from groupbuying_board where "+col+" like '%"+search+"%' order by reg_date desc) order by reg_date desc ) where r >= ? and r <= ? ");
 					pstmt.setInt(1, start); 
 					pstmt.setInt(2, end);
 					
@@ -267,11 +267,11 @@ public class BoardDBBean
 		try {
 			conn = ConnectionDAO.getConnection();
 			pstmt = conn.prepareStatement(
-			"update board set readcount=readcount+1 where num = ?"); 
+			"update groupbuying_board set readcount=readcount+1 where num = ?"); 
 			pstmt.setInt(1, num);
 			pstmt.executeUpdate();
 			pstmt = conn.prepareStatement(
-			"select * from board where num = ?"); 
+			"select * from groupbuying_board where num = ?"); 
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -299,7 +299,7 @@ public class BoardDBBean
 		try {
 			conn = ConnectionDAO.getConnection();
 			pstmt = conn.prepareStatement(
-			"select * from board where num = ?"); 
+			"select * from bogroupbuying_board where num = ?"); 
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {
@@ -333,13 +333,13 @@ public class BoardDBBean
 		try {
 			conn = ConnectionDAO.getConnection();
 			pstmt = conn.prepareStatement(
-			"select passwd from board where num = ?");
+			"select passwd from groupbuying_board where num = ?");
 			pstmt.setInt(1, article.getNum());
 			rs = pstmt.executeQuery();
 			if(rs.next()){
 				dbpasswd= rs.getString("passwd"); 
 				if(dbpasswd.equals(article.getPasswd())){
-					sql="update board set writer=?,email=?,subject=?,passwd=?";
+					sql="update groupbuying_board set writer=?,email=?,subject=?,passwd=?";
 					sql+=",content=? where num=?";
 					pstmt = conn.prepareStatement(sql);
 					pstmt.setString(1, article.getWriter());
@@ -368,13 +368,13 @@ public class BoardDBBean
 		try {
 			conn = ConnectionDAO.getConnection();
 			pstmt = conn.prepareStatement(
-			"select passwd from board where num = ?");
+			"select passwd from groupbuying_board where num = ?");
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
 			if(rs.next()){
 				dbpasswd= rs.getString("passwd");
 				if(dbpasswd.equals(passwd)){
-					pstmt = conn.prepareStatement("delete from board where num=?");
+					pstmt = conn.prepareStatement("delete from groupbuying_board where num=?");
 					pstmt.setInt(1, num);
 					pstmt.executeUpdate();
 					x= 1; 
