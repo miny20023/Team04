@@ -88,7 +88,6 @@ z-index:200;
 /*top:1em;
 /*left:0;*/
 }
-
 .menubar li:hover ul{
 display:block; /* 마우스 커서 올리면 드랍메뉴 보이게 하기 */
 }
@@ -164,10 +163,10 @@ if(id!=null){%>
 <ul>
  <li><a href="#">나의 냉장고</a>
  	<ul>
- 	 <li><a>재료추가</a></li>
- 	 <li><a>재료정리</a></li>
- 	 <li><a>재료조합</a></li>
- 	 <li><a>장보기 메모</a></li>
+ 	 <li><a href="/myneng/myRefrigerator/insert.jsp">재료추가</a></li>
+ 	 <li><a href="/myneng/myRefrigerator/update.jsp">재료정리</a></li>
+ 	 <li><a href="/myneng/myRefrigerator/mixRecipe.jsp">재료조합</a></li>
+ 	 <li><a href="#">장보기 메모</a></li>
  	</ul>
  </li>
  <li><a href="#" id="current">레시피</a>

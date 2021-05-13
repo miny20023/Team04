@@ -87,6 +87,44 @@ public class RecipeDAO {
 		return x;
 	}
 	
+	// 추천 레시피 권한별 작성된 글 수 반환
+			public int getRecipeCount(List<Integer> recList, int master, String id) {
+				int x = 0;
+				String sql = "";
+				int recNum = 0;
+				try {
+					for(int i = 0; i < recList.size(); i++) {
+						conn = ConnectionDAO.getConnection();
+						if(master == 2) {
+							sql = "select count(*) from recipe where num = ? and status in(1, 2)";
+							pstmt = conn.prepareStatement(sql);
+							recNum = recList.get(i);
+							pstmt.setInt(1, recNum);
+						}else if(master == 0) {
+							sql = "select count(*) from (select * from recipe where num = ? and status in (1, 2)) where status=2 or writer=?";
+							pstmt = conn.prepareStatement(sql);
+							recNum = recList.get(i);
+							pstmt.setInt(1, recNum);
+							pstmt.setString(2, id);
+						}else{
+							sql = "select count(*) from recipe where num = ? and status=2";
+							pstmt = conn.prepareStatement(sql);
+							recNum = recList.get(i);
+							pstmt.setInt(1, recNum);
+						}
+						rs = pstmt.executeQuery();
+						if(rs.next()) {
+							x = rs.getInt(1);
+						}
+					}
+				}catch(Exception e) {
+					e.printStackTrace();
+				}finally {
+					ConnectionDAO.close(rs, pstmt, conn);
+				}
+				return x;
+			}
+	
 	// 게시판 한페이지에 보여줄 레시피 목록 반환
 	public List <RecipeDTO> getRecipes(int start, int end, int master, String id) {
 		List <RecipeDTO> recipeList = null;
@@ -140,6 +178,69 @@ public class RecipeDAO {
 			}
 		return recipeList;
 	}
+	
+	// 추천 레시피 게시판 한페이지에 보여줄 레시피 목록 반환
+		public List <RecipeDTO>  getRecipes(List<Integer> recList, int start, int end, int master, String id) {
+			List recipeList = null;
+			int recNum = 0;
+			String sql = "";
+				try {
+					for(int i = 0; i < recList.size(); i++) {
+						conn = ConnectionDAO.getConnection();
+						if(master == 2) {
+							sql = "select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, r " 
+									+"from (select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, rownum r "
+									+"from (select * from recipe where num = ? and status in (1, 2) order by num desc)) where r >=? and r <=?";
+							pstmt = conn.prepareStatement(sql);
+							recNum = recList.get(i);
+							pstmt.setInt(1, recNum);
+							pstmt.setInt(2, start);
+							pstmt.setInt(3, end);
+						}else if(master == 0) {
+							sql = "select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, r " 
+									+"from (select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, rownum r "
+									+"from (select * from recipe where num = ? and status in (1, 2) order by num desc) where status=2 or writer=? order by num desc) where r >=? and r <=?";
+							pstmt = conn.prepareStatement(sql);
+							recNum = recList.get(i);
+							pstmt.setInt(1, recNum);
+							pstmt.setString(2, id);
+							pstmt.setInt(3, start);
+							pstmt.setInt(4, end);					
+						}else {
+							sql = "select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, r " 
+									+"from (select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, rownum r "
+									+"from (select * from recipe where num = ? and status=2 order by num desc)) where r >=? and r <=?";
+							pstmt = conn.prepareStatement(sql);
+							recNum = recList.get(i);
+							pstmt.setInt(1, recNum);
+							pstmt.setInt(2, start);
+							pstmt.setInt(3, end);				
+						}
+						rs = pstmt.executeQuery();
+						recipeList = new ArrayList <RecipeDTO> (end);
+						while(rs.next()) {
+							RecipeDTO recipe = new RecipeDTO();
+							recipe.setNum(rs.getInt("num"));
+							recipe.setName(rs.getString("name"));
+							recipe.setProcess(rs.getString("process"));
+							recipe.setWriter(rs.getString("writer"));
+							recipe.setDifficulty(rs.getInt("difficulty"));
+							recipe.setImage(rs.getString("image"));
+							recipe.setCooking_time(rs.getInt("cooking_time"));
+							recipe.setDay(rs.getTimestamp("day"));
+							recipe.setReadcount(rs.getInt("readcount"));
+							recipe.setReccommend(rs.getInt("reccommend"));
+							recipe.setStatus(rs.getInt("status"));
+							recipeList.add(recipe);
+						}
+					}
+				}catch(Exception e) {
+					e.printStackTrace();
+				}finally {
+					ConnectionDAO.close(rs, pstmt, conn);
+				}
+			return recipeList;
+		}
 	
 	//게시글 제목 클릭시 해당 게시글 조회수 1증가
 	public void readCount(int num) {
