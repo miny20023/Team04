@@ -194,6 +194,151 @@ public class MemberDAO {
 		finally {ConnectionDAO.close(rs, pstmt, conn);}
 	}
 	
+	public MemberDTO getMember(String id) {
+		MemberDTO dto = null;
+		try {
+			conn=ConnectionDAO.getConnection();
+			String sql = "select * from member where id=?";
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs=pstmt.executeQuery();
+			if(rs.next()){
+				dto = new MemberDTO();
+				dto.setId(rs.getString("id"));
+				dto.setName(rs.getString("name"));
+				dto.setPw(rs.getString("password"));
+				dto.setEmail(rs.getString("email"));
+				dto.setPhone(rs.getString("phone"));
+				dto.setAddress(rs.getString("address"));
+				dto.setGroup_pw(rs.getString("group_pw"));
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			ConnectionDAO.close(rs,pstmt,conn);
+		}
+		return dto;
+	}
+	
+	public void statusChange(String id) {
+		  try {
+		       conn = ConnectionDAO.getConnection(); //1, 2ï¿½Ü°ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½
+		       pstmt = conn.prepareStatement("update member set master=3, group_id=? where id=?");
+		       pstmt.setString(1, id+"_refrigerator");
+		       pstmt.setString(2, id);
+		       
+		       pstmt.executeUpdate();
+		       
+		   }catch(Exception e) {
+		        e.printStackTrace();
+		   }finally {
+		        ConnectionDAO.close(rs,pstmt,conn);
+		   }
+	  }
+	
+	public void updateMember(MemberDTO dto) {
+		try {
+			
+			conn=ConnectionDAO.getConnection();
+			String sql = "update member set name=?, password=?, email=?, phone=?, address=?, group_pw=? where id=?";
+			pstmt=conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getName());
+			pstmt.setString(2, dto.getPw());
+			//int age = Integer.parseInt(dto.getAge());
+			pstmt.setString(3, dto.getEmail());
+			pstmt.setString(4, dto.getPhone());
+			pstmt.setString(5, dto.getAddress());
+			pstmt.setString(6, dto.getGroup_pw());
+			pstmt.setString(7, dto.getId());	        
+			pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			ConnectionDAO.close(rs,pstmt,conn);
+		}
+	}
+	
+	//±×·ìÀåÀÇ ÀÌ¸§°Ë»ö
+		public MemberDTO getRefrigerator(String g_id) {
+			MemberDTO dto = null;
+			try{
+				conn = ConnectionDAO.getConnection();
+				String sql = "select * from member where id=?";
+				pstmt= conn.prepareStatement(sql);
+				pstmt.setString(1, g_id);
+				rs=pstmt.executeQuery();
+				if(rs.next()) {
+					dto = new MemberDTO();
+					dto.setName(rs.getString("name"));
+					dto.setId(rs.getString("id"));
+					dto.setGroup_id(rs.getString("group_id"));
+					dto.setGroup_pw(rs.getString("group_pw"));
+				}
+				}catch(Exception e) {e.printStackTrace();}
+				finally {ConnectionDAO.close(rs, pstmt, conn);}
+			return dto;
+		}
+		
+		public boolean certifyPw(String g_id, String g_pw) {
+			boolean result = false;
+			try{
+				conn = ConnectionDAO.getConnection();
+				String sql = "select group_pw from member where id=?";
+				pstmt= conn.prepareStatement(sql);
+				pstmt.setString(1, g_id);
+				rs=pstmt.executeQuery();
+				if(rs.next()) {
+					if(rs.getString("group_pw").equals(g_pw)) {
+						result = true;
+					}
+				}
+				}catch(Exception e) {e.printStackTrace();}
+				finally {ConnectionDAO.close(rs, pstmt, conn);}
+			return result;
+		}
+	
+	public void changeRefri(String id, MemberDTO dto) {
+		try{
+			conn = ConnectionDAO.getConnection();
+			String sql = "update member set group_id=? where id=?";
+			pstmt= conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getGroup_id());
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+			sql = "update member set group_pw=? where id=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getGroup_pw());
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+			}catch(Exception e) {e.printStackTrace();}
+			finally {ConnectionDAO.close(rs, pstmt, conn);}
+	}
+	
+	public void quitGroup(String id) {
+		try{
+			conn = ConnectionDAO.getConnection();
+			String sql = "update member set group_id=? where id=?";
+			pstmt= conn.prepareStatement(sql);
+			String g_id = id + "_refrigerator";
+			pstmt.setString(1, g_id);
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+			
+			sql = "update member set group_pw=? where id=?";
+			String text = "";
+			String alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@&%?~";
+			text += (int) (Math.random() * 999) + 1 + "";
+			text += alpha.charAt((int) (Math.random() * alpha.length()));
+			text += (int) (Math.random() * 99) + 1 + "";
+			text += alpha.charAt((int) (Math.random() * alpha.length()));
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, text);
+			pstmt.setString(2, id);
+			pstmt.executeUpdate();
+			}catch(Exception e) {e.printStackTrace();}
+			finally {ConnectionDAO.close(rs, pstmt, conn);}
+	}
 	
 	
 }

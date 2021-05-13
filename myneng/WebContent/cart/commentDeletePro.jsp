@@ -12,11 +12,22 @@
 	String id = (String)session.getAttribute("memId");
 	
 	CommentDBBean dbPro = new CommentDBBean();
-	int check = dbPro.deleteArticle_comment(num,listNum, id);
+	int check = dbPro.deleteArticle_comment(num,listNum, id,pageNum);
 	
-	if(check==1)
+	if(check==1 || check == 2)
 	{
-		response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_listNum=0");
+		if(check == 1)
+		{
+			response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_listNum=0");
+		}
+		else if(check == 2)
+		{
+			response.sendRedirect("content.jsp?num="+num+"&pageNum="+(pageNum-1)+"&comment_listNum=0");
+		}
+		else
+		{
+			System.out.println("ERROR");
+		}
 	}
 	else if(check==0)
 	{%>

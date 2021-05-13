@@ -9,6 +9,7 @@
 border:none;
 border:0px;
 margin:0px;
+margin-bottom:30px;
 padding:0px;
 font: 67.5% "Lucida Sans Unicode", "Bitstream Vera Sans", "Trebuchet Unicode MS", "Lucida Grande", Verdana, Helvetica, sans-serif;
 font-size:14px;
@@ -171,25 +172,29 @@ if(id!=null){%>
  </li>
  <li><a href="#" id="current">레시피</a>
 	<ul>
-     <li><a href="#">레시피 정보 공유</a></li>
-     <li><a href="#">레시피 게시판</a></li>
+     <li><a href="/myneng/recipe/recipeWriteForm.jsp">레시피 정보 공유</a></li>
+     <li><a href="/myneng/recipe/recipeListForm.jsp">레시피 게시판</a></li>
     </ul>
  </li>
  <li><a href="#">장보기</a>
  	<ul>
-     <li><a href="#">마트위치찾기</a></li>
+     <li><a href="/myneng/cart/mart.jsp">마트위치찾기</a></li>
      <li><a href="/myneng/cart/groupBuying.jsp">공동구매</a></li>
      <li><a href="#">장보기 정보 공유</a></li>
     </ul>	
  </li>
+ <%
+ 	if(id != null) {
+ %>
  <li><a href="#">나의 정보</a>
  	<ul>
-     <li><a href="#">찜한 레시피</a></li>
-     <li><a href="#">식단 짜기</a></li>
-     <li><a href="#">개인 정보</a></li>
-     <li><a href="#">회원 탈퇴</a></li>
+     <li><a href="/myneng/myinfo/recipeScrapForm.jsp">찜한 레시피</a></li>
+     <li><a href="/myneng/diet/dietCalendar.jsp">식단 짜기</a></li>
+     <li><a href="/myneng/myinfo/myInfoUpdate.jsp">개인 정보 수정</a></li>
+     <li><a href="/myneng/myinfo/myInfoDelete.jsp">회원 탈퇴</a></li>
     </ul>
  </li>
+ <%} %>
 </ul>
 </div>
 </body>

@@ -94,8 +94,9 @@ public class CommentDBBean
 		}
 	}
 	
-	public int deleteArticle_comment(int num,int listNum, String id) throws Exception
+	public int deleteArticle_comment(int num,int listNum, String id,int pageNum) throws Exception
 	{
+		int getListNum = listNum + (10*(pageNum-1));
 		int x = -1;
 		String seqName = "groupbuying_comment_"+num+"_seq";
 		String tableName = "groupbuying_comment_"+num;
@@ -106,7 +107,7 @@ public class CommentDBBean
 					+"from (select "+seqName+",comment_id,comment_text,reg_date,ref,re_step,re_level,rownum r "
 				     +"from (select "+seqName+",comment_id,comment_text,reg_date,ref,re_step,re_level "
 				            +"from "+tableName+" order by ref asc, re_step asc) order by ref asc, re_step asc ) "
-				+"where r="+listNum;
+				+"where r="+getListNum;
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			int dbRef = 0;
@@ -150,6 +151,10 @@ public class CommentDBBean
 		finally
 		{
 			ConnectionDAO.close(rs, pstmt, conn);
+		}
+		if(getListNum % 10 == 1 && getListNum != 1)
+		{
+			x = 2;
 		}
 		return x;
 	}

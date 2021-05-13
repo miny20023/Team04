@@ -29,7 +29,7 @@
 <input type="hidden" name="num" value="<%=num %>">
 <input type="hidden" name="current_url" value ="<%=current_url %>">
 <input type="hidden" name="pageNum" value="<%=pageNum %>">
-<input type="hidden" name="comment_listNum" value="<%=comment_listNum %>">
+<input type="hidden" name="comment_listNum" value="0">
 <textarea cols = "70" rows "10" name="comment_text"></textarea>
 <input type="submit" value="댓글 등록"></br>
 </form>

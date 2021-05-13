@@ -16,7 +16,7 @@
     }
 
     int currentPage = Integer.parseInt(pageNum); //	1
-    int startRow = (currentPage - 1) * pageSize + 1;	// (1-1) * 10 + 1 = 11
+    int startRow = (currentPage - 1) * pageSize + 1;
     int endRow = currentPage * pageSize;	// 1 * 10 = 10
     int count = 0;		// 전체 게시물 수 
     int number=0;		// 화면 글 번호
@@ -118,13 +118,13 @@
         if (endPage > pageCount) endPage = pageCount;
         
         if (startPage > 10) {    %>
-        <a href="commnetList.jsp?pageNum=<%= startPage - 10 %>">[이전]</a>
+        <a href="content.jsp?num=<%=num %>&pageNum=<%= startPage - 10 %>&comment_listNum=0">[이전]</a>
 <%      }
         for (int i = startPage ; i <= endPage ; i++) {  %>
-        	<a href="commnetList.jsp?pageNum=<%= i %>">[<%= i %>]</a>
+        	<a href="content.jsp?num=<%=num %>&pageNum=<%= i %>&comment_listNum=0">[<%= i %>]</a>
 <%		}
         if (endPage < pageCount) {  %>
-        	<a href="commnetList.jsp?pageNum=<%= startPage + 10 %>">[다음]</a>
+        	<a href="content.jsp?num=<%=num %>&pageNum=<%= startPage + 10 %>&comment_listNum=0">[다음]</a>
 <%		}
     }
 %>
