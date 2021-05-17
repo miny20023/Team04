@@ -6,6 +6,7 @@
 <%@ page import="recipe.bean.RecipeDAO" %>
 <%@ page import="cook.bean.CookDAO" %>
 <%@ page import="cook.bean.CookDTO" %>
+<%@ page import="recipe.bean.RecipeCommentDAO" %>
 <%@ page import="java.util.List" %>
 <%@ include file = "../menu.jsp" %>
  
@@ -32,6 +33,7 @@
 		
 		RecipeDAO dao = new RecipeDAO();
 		CookDAO daoc = new CookDAO();
+		RecipeCommentDAO daorc = new RecipeCommentDAO();
 		RecipeDTO recipe = new RecipeDTO();
 		recipe.setName(name);
 		recipe.setProcess(process);
@@ -44,6 +46,8 @@
 
 		
 		daoc.changeRec_id(random_id, rec_id); 		// 임시 rec_id 난수값을 실제 rec_id로 변경	
+		daorc.createCommentTable(rec_id);			// 레시피 등록된 번호로 댓글 게시판 생성
+
 		session.removeAttribute("random_id");		// 레시피 작성 관련 세션 삭제
 		session.removeAttribute("ingList");
 		session.removeAttribute("ingList2");%>

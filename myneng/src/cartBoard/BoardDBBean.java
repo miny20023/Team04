@@ -299,7 +299,7 @@ public class BoardDBBean
 		try {
 			conn = ConnectionDAO.getConnection();
 			pstmt = conn.prepareStatement(
-			"select * from bogroupbuying_board where num = ?"); 
+			"select * from groupbuying_board where num = ?"); 
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
 			if (rs.next()) {

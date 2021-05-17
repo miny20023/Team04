@@ -11,11 +11,12 @@
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");		// 작성 날짜 해당 형식으로 보기 위함 아래 91번 라인에서 사용
 
     String pageNum = request.getParameter("pageNum");		// 리스트에서 페이지 번호 클릭 시 
+    String comment_pageNum = request.getParameter("comment_pageNum");
     if (pageNum == null) {
         pageNum = "1";
     }
 
-    int currentPage = Integer.parseInt(pageNum); //	1
+    int currentPage = Integer.parseInt(comment_pageNum); //	1
     int startRow = (currentPage - 1) * pageSize + 1;
     int endRow = currentPage * pageSize;	// 1 * 10 = 10
     int count = 0;		// 전체 게시물 수 
@@ -71,7 +72,7 @@
     	 <td align="center" width="50">
     	 	<%if(comment_listNum != listNum || comment_listNum == 0)
     	 	{%>
-    	 		<a href="content.jsp?num=<%=num%>&pageNum=<%=pageNum%>&comment_listNum=<%=listNum%>">
+    	 		<a href="content.jsp?num=<%=num%>&pageNum=<%=pageNum%>&comment_pageNum=<%=comment_pageNum %>&comment_listNum=<%=listNum%>">
         	 	댓글달기</a>
     	 	<%}
     	 	else
@@ -81,11 +82,20 @@
     	 	<%} %>
     	 	
     	 </td>
+    	 <%if(article.getComment_id().equals(id)) 
+    	 {%>
     	 <td align="center" width="50">
-    	 	<a href="commentDeletePro.jsp?num=<%=num %>&pageNum=<%=pageNum %>&listNum=<%=listNum %>"
+    	 	<a href="commentDeletePro.jsp?num=<%=num %>&pageNum=<%=pageNum %>&comment_pageNum=<%=comment_pageNum %>&listNum=<%=listNum %>"
     	 	onclick="return confirm('댓글을 삭제하시겠습니까?');">
     	 	댓글삭제</a>
     	 </td>
+    	 <%}
+    	 else
+    	 {%>
+    		 <td align="center" width="50">
+
+    	 	</td>
+    	 <%}%>
 	</tr>
 	<%
 		if(comment_listNum == listNum)
@@ -118,13 +128,13 @@
         if (endPage > pageCount) endPage = pageCount;
         
         if (startPage > 10) {    %>
-        <a href="content.jsp?num=<%=num %>&pageNum=<%= startPage - 10 %>&comment_listNum=0">[이전]</a>
+        <a href="content.jsp?num=<%=num %>&pageNum=<%=pageNum %>&coment_pageNum=<%= startPage - 10 %>&comment_listNum=0">[이전]</a>
 <%      }
         for (int i = startPage ; i <= endPage ; i++) {  %>
-        	<a href="content.jsp?num=<%=num %>&pageNum=<%= i %>&comment_listNum=0">[<%= i %>]</a>
+        	<a href="content.jsp?num=<%=num %>&pageNum=<%= pageNum %>&comment_pageNum=<%=i %>&comment_listNum=0">[<%= i %>]</a>
 <%		}
         if (endPage < pageCount) {  %>
-        	<a href="content.jsp?num=<%=num %>&pageNum=<%= startPage + 10 %>&comment_listNum=0">[다음]</a>
+        	<a href="content.jsp?num=<%=num %>&pageNum=<%=pageNum %>&coment_pageNum=<%= startPage + 10 %>&comment_listNum=0">[다음]</a>
 <%		}
     }
 %>

@@ -17,10 +17,11 @@
 	String memId = (String)session.getAttribute("memId");
 	if (memId == null || memId.trim().isEmpty()) {%>
 		<script>
-			alert("아이디의 세션이 종료 되어서 aaa 계정으로 로그인합니다.");
+			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
+			window.location="/myneng/menu.jsp"
 		</script>
-		<%memId = "aaa";
-	}	
+		<%
+	}
 	
 	// DAO 선언
 	MaNengDBBean mnDB = new MaNengDBBean();

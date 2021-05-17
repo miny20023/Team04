@@ -13,13 +13,13 @@
     		dao.setScrap(id, num); %>
     	    <script>
         	alert("찜 목록에 추가되었습니다.");
-        	window.location = "recipeContentForm.jsp?num=<%=num%>&pageNum=<%=pageNum%>&random_id=0";
+        	window.location = "recipeContentForm.jsp?num=<%=num%>&pageNum=<%=pageNum%>&random_id=0&comment_listNum=0";
         	</script>
 <%    	} else{	
 			dao.cancleScrap(id, num); %>
 			<script>
 			alert("찜 목록이 해제되었습니다.");
-			window.location = "recipeContentForm.jsp?num=<%=num%>&pageNum=<%=pageNum%>&random_id=0";
+			window.location = "recipeContentForm.jsp?num=<%=num%>&pageNum=<%=pageNum%>&random_id=0&comment_listNum=0";
 			</script>
 <%}
     	 

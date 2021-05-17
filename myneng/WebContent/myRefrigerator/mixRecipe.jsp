@@ -4,6 +4,7 @@
 <%@ page import = "java.util.List" %>
 <%@ page import = "java.util.ArrayList" %>
 <%@ include file = "../menu.jsp" %>
+<link href="form.css" rel="stylesheet" type="text/css">
 <body bgcolor="#f0efea">
 
 <%
@@ -117,6 +118,7 @@
     
     number=count-(currentPage-1)*pageSize;
 %>
+<div class="center">
 <form name="f2" action="mixRecipeSearch.jsp" method="post">
 <input type="hidden" id="search" name="search">
 <input type="text" id="keyword" /><input type="submit" value="검색" onclick="javascript:goSearch()"><br/>
@@ -181,6 +183,7 @@
 <input type="hidden" id="test" name="test">
 <input type="hidden" id="pageNum" name="pageNum">
 </form>
+</div>
 </body>
 <script type="text/javascript">
 var checkedVar = new Array();
@@ -223,7 +226,7 @@ function mixCheck() {
 }
 
 function check(ingId){
-	var chName = document.getElementById("hiddenName"+ingId).value;
+	var chName = document.getElementById("hiddenName"+ingId);
 	for(let i = 0; i < checkedVar.length; i++) {
 		var newArray = checkedVar[i];
 		var verId = newArray[0];
@@ -232,19 +235,19 @@ function check(ingId){
 			checkedVar.splice(i, 1);
 			i--;
 			document.getElementById("test").value = checkedVar;
-			alert(chName + "이/가 체크 해제 되었습니다");
+			alert(chName.value + "이/가 체크 해제 되었습니다");
 			return true;
 		}
 	}
 	var newArray = new Array();	
 	newArray.push(ingId);
-	newArray.push(chName);
+	newArray.push(chName.value);
 	newArray.push(document.getElementById("hiddenAmount"+ingId).value);
 	newArray.push(document.getElementById("hiddenUnit"+ingId).value);
 	newArray.push(document.getElementById("hiddenFreshness"+ingId).value);
 	checkedVar[checkedVar.length] = newArray;
 	document.getElementById("test").value = checkedVar;
-	alert(chName + "이/가 체크 되었습니다");
+	alert(chName.value + "이/가 체크 되었습니다");
 	return true;	
 }
 </script>

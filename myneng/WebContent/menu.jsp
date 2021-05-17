@@ -173,6 +173,7 @@ if(id!=null){%>
 	<ul>
      <li><a href="/myneng/recipe/recipeWriteForm.jsp">레시피 정보 공유</a></li>
      <li><a href="/myneng/recipe/recipeListForm.jsp">레시피 게시판</a></li>
+     <li><a href="/myneng/recipeRequest/recipeRequest.jsp">레시피 요청 게시판</a></li>
     </ul>
  </li>
  <li><a href="#">장보기</a>

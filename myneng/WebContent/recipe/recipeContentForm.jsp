@@ -14,10 +14,12 @@ if(session.getAttribute("memId") != null){
  
 	int num = Integer.parseInt(request.getParameter("num"));
 	int random_id = Integer.parseInt(request.getParameter("random_id"));
+	String comment_listNum = request.getParameter("comment_listNum");
 	if(session.getAttribute("random_id") != null){
 		random_id = (int) session.getAttribute("random_id");
 	}
 	System.out.println("recipeContentForm의 random_id =" +random_id);
+	System.out.println("recipeContentForm의 comment_listNum =" +comment_listNum);
 	
 	String pageNum = request.getParameter("pageNum");
 		
@@ -71,7 +73,7 @@ if(session.getAttribute("memId") != null){
 </tr>
 </table>
 <%	if(id.equals(recipe.getWriter())){%>
-		<input type="button" value="수  정" onclick="window.location='recipeUpdateForm.jsp?PageNum=<%=pageNum%>&num=<%=num%>&random_id=0'"/>
+		<input type="button" value="수  정" onclick="window.location='recipeUpdateForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0'"/>
 		<input type="button" value="삭  제" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>'"/>
 	<%} else{%>
 	<input type="button" value="추  천" onclick="window.location='recipeReccPro.jsp?num=<%=num%>'"/>
@@ -93,6 +95,17 @@ if(session.getAttribute("memId") != null){
 
 <input type="button" value="목  록" onclick="window.location='recipeListForm.jsp?PageNum=<%=pageNum %>'" />
 
+<jsp:include page="recipeCommentList.jsp" >
+	<jsp:param name="num" value="<%=num %>" />
+	<jsp:param name="comment_listNum" value="<%=comment_listNum %>" />
+</jsp:include>
+
+<jsp:include page = "recipeCommentWriteForm.jsp">
+	<jsp:param name="num" value="<%=num %>" />
+	<jsp:param name="pageNum" value="<%=pageNum %>" />
+	<jsp:param name="comment_listNum" value="<%=comment_listNum %>" />
+</jsp:include>
+
 </center>
 <%}else{ %>
 	<script>
@@ -101,4 +114,7 @@ if(session.getAttribute("memId") != null){
 	</script>
 <%} %>
 </body>
+
+
+
 

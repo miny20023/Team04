@@ -41,7 +41,7 @@
 		<tr>
 	    <td align="center" width="50"><%=number %></td>
 	    <td align="center" width="300">
-	    	<a href="recipeContentForm.jsp?num=<%=recipe.getNum()%>&pageNum=<%=currentPage%>&random_id=0">
+	    	<a href="recipeContentForm.jsp?num=<%=recipe.getNum()%>&pageNum=<%=currentPage%>&random_id=0&comment_listNum=0">
 	    		<%if(recipe.getReccommend() >= 5){%> <font color="red"> ☆<%} %><%=recipe.getName() %>
 	    		<%if(recipe.getReccommend() >= 5){%> ★</font> <%} 			// 인기글(추천수 5이상)%><a>
 	   	</td>

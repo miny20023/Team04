@@ -18,7 +18,7 @@
 %>
  
 <center>
-<form action="recipeUpdatePro.jsp?PageNum=<%=pageNum%>&num=<%=num%>&random_id=<%=random_id %>" method="post" enctype="multipart/form-data">
+<form action="recipeUpdatePro.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=<%=random_id %>&conmment_listNum=0" method="post" enctype="multipart/form-data">
 <table border="1" cellpadding="0" cellspacing="0" align="center">
 <tr>
 	<td colspan="4" align="center">

@@ -10,16 +10,18 @@
 
 	// 경고 메시지
 	String alert = "변경 사항이 없습니다!";	
+	String insertInfo ="";
 
 	//memId 가져오기
 		String memId = (String)session.getAttribute("memId");
 		if (memId == null || memId.trim().isEmpty()) {%>
 		<script>
-		alert("아이디의 세션이 종료 되어서 aaa 계정으로 로그인합니다.");
+			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
+			<window.location="/myneng/menu.jsp"
 		</script>
-			<%memId = "aaa";
-	 }						
-	
+		<%
+    }
+		
 	// DAO 선언
 	MaNengDBBean mnDB = new MaNengDBBean();
 	
@@ -101,15 +103,16 @@
 					if(ing.getIngname().equals(preIng.getIngname())){
 						if(mnDB.dateCompare(ing.getFreshness())<0){%>
 							<script type="text/javascript">
-								var check = confirm("<%=ing.getIngname()%>의 유통기한이 지났습니다! 계속 진행하겠습니까?");
-								if(check){
-								}else{
+								var dateCheck = confirm("<%=ing.getIngname()%>의 유통기한이 지났습니다! 계속 진행하겠습니까?");
+								if(!dateCheck){
+									alert("<%=insertInfo%>"+"<%=alert%>");
 									window.location="update.jsp";
-								};
+								}
 							</script>
 						<%}
 							mnDB.updateRef(ing, preIng , memId + "_refrigerator");
-							alert = "냉장고가 수정 되었습니다!";
+							insertInfo += ing.getIngname()+" ";
+							alert = "가 냉장고에 수정 되었습니다!";
 						}
 					}
 				}
@@ -129,6 +132,6 @@
 	}
 %>
 <script type="text/javascript">
-	alert("<%=alert%>");
+	alert("<%=insertInfo%>"+"<%=alert%>");
 	window.location="update.jsp";
 </script>

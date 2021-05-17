@@ -1,10 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<script type="text/javascript">
+<script>
 
 	function idCheck(){
 		var id=document.joinform.id.value;
+		if(id){
 		open("idCheck.jsp?id="+id,"check","width=400 height=300");
+		}else{
+			alert("id를 입력하지 않았습니다.");
+
+		}
+		
 	}
 	
 	function pwrCheck(){
@@ -18,35 +24,62 @@
 		document.getElementById("pwresult").innerHTML=rpc;
 	}
 	
-	/*
-	function joinCheck(){
-		//var str=document.joinform.id.value;
-		if(document.joinform.id.value==""{
-			alert("id를 입력하지 않았습니다.")		
-			joinform.id.focus();
+	function sub(){
+		var id = document.joinform.id.value; // 현재문서의 아이디네임과 그 태그의 값
+		
+		if(!id){//false 값이 없다는 것
+			alert("id를 입력하지 않았습니다.");
+			//id입력하는 자리에 커서이동하게 작업
+			document.joinform.id.focus();//focus();커서 id에 커서를 갖다대라
 			return false;
 		}
-		if(document.joinform.pw.value!=document.joinform.pwr.value){
-			alret("비밀번호가 일치하지 않습니다.")
-			return false
+		
+		var pw = document.joinform.pw.value;
+		if(!pw){
+			alert("비밀번호를 입력하지 않았습니다.");
+			document.joinform.pw.focus();
+			return false;	
 		}
-		if(document.joinform.pw.value==""){
-			alret("비밀번호를 입력하지 않았습니다.")
-			return false
+		
+		var pwr = document.joinform.pwr.value;
+		if(pw !=pwr){//유효성검사
+			alert("비밀번호가 일치하지 않습니다.")//
+			return false; // 같지않으면 넘어가면 안됨
 		}
-	    if (document.joinform.name.value == "") {
-            alert("이름을 입력하지 않았습니다.")
-            document.f.name.focus();
+		
+		if(document.joinform.name.value == ""){
+            alert("이름을 입력하지 않았습니다.");
+            document.joinform.name.focus();
             return false;
         }
-	    if (document.joinform.adress.value == "") {
+		if(document.joinform.address.value == ""){
             alert("주소를 입력하지 않았습니다.")
-            document.f.name.focus();
+            document.joinform.address.focus();
             return false;
         }
-	    document.joinform.submit();
-	}
-	*/
+		
+		if(document.joinform.ph1.value == ""){
+            alert("번호를 입력하지 않았습니다.")
+            document.joinform.ph1.focus();
+            return false;
+		}
+		if(document.joinform.ph2.value == ""){
+            alert("번호를 입력하지 않았습니다.")
+            document.joinform.ph2.focus();
+            return false;
+		}
+		if(document.joinform.ph3.value == ""){
+            alert("번호를 입력하지 않았습니다.")
+            document.joinform.ph3.focus();
+            return false;
+		}
+		if(document.joinform.email.value == ''){
+            alert("이메일을 입력하지 않았습니다.")
+            document.joinform.email.focus();
+            return false;
+		}
+		
+	}		
 </script>   
 
 <%
@@ -63,7 +96,7 @@ group_pw += alpha.charAt((int) (Math.random() * alpha.length()));
 
 	
 <%-- form name="joinform" action ="memberInsertPro.jsp" method="post" onsubmit="return joinCheck();" --%>
-<form name="joinform" action ="joinPro.jsp" method="post" onsubmit="return joinCheck();" >
+<form name="joinform" action ="joinPro.jsp" method="post" onsubmit="return sub();" >
 
 <input type="hidden" name="group_pw" value="<%=group_pw%>" />
 
@@ -71,22 +104,22 @@ group_pw += alpha.charAt((int) (Math.random() * alpha.length()));
 
 <tr>
 <td>아이디</td>
-<td><input type ="text" name="id" /> <input type ="button" value ="중복확인" onclick="idCheck();" /></td>
+<td><input type ="text" name="id" placeholder="3글자 이상 " /> <input type ="button" value ="중복확인" onclick="idCheck();" /></td>
 </tr>
 
 <tr>
 <td>이름</td>
-<td><input type ="text" name="name" /></td>
+<td><input type ="text" name="name"  /></td>
 </tr>
 
 <tr>
 <td>비밀번호</td>
-<td><input type ="password" name="pw" onchange="pwrCheck()"/></td>
+<td><input type ="password" name="pw" placeholder="4글자 이상, 숫자 포함" onchange="pwrCheck()"/></td>
 </tr>
 
 <tr>
 <td>비밀번호 확인</td>
-<td><input type ="password" name="pwr"  onchange="pwrCheck()"/><label id="pwresult"></label></td>
+<td><input type ="password" name="pwr"  placeholder="4글자 이상, 숫자 포함"  onchange="pwrCheck()"/><label id="pwresult"></label></td>
 </tr>
 
 

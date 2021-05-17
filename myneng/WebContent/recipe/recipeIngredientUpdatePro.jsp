@@ -49,6 +49,8 @@
 %>
 
 <script>
+	var rec_id = '<%=rec_id%>';
+	var random_id = '<%=random_id%>';
 	alert("수정되었습니다.");
-	window.location = "recipeIngredientUpdateForm.jsp?num=<%=rec_id %>&random_id=<%=random_id %>";
+	window.location = "recipeIngredientUpdateForm.jsp?num="+rec_id+"&random_id="+random_id;
 </script>

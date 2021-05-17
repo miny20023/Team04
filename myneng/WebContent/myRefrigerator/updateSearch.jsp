@@ -5,6 +5,7 @@
 <%@ page import = "java.util.ArrayList" %>
 <%@ page import = "java.net.URLEncoder" %>
 <%@ include file = "../menu.jsp" %>
+<link href="form.css" rel="stylesheet" type="text/css">
 <body bgcolor="#f0efea">
 
 <%
@@ -17,7 +18,6 @@
 	if(search == null || search.trim().isEmpty()){%>
 		<script>
 			alert("검색어가 입력되지 않았습니다.");
-			window.location="update.jsp"
 		</script>
 		<%
 	}else{
@@ -28,9 +28,10 @@
 	String memId = (String)session.getAttribute("memId");
 	if (memId == null || memId.trim().isEmpty()) {%>
 		<script>
-			alert("아이디의 세션이 종료 되어서 aaa 계정으로 로그인합니다.");
+			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
+			window.location="/myneng/menu.jsp"
 		</script>
-		<%memId = "aaa";
+		<%
 	}
 	
 	// 임의 페이지수 게시글 수 정의
@@ -50,12 +51,18 @@
     boolean c = false;
     
  	// inglist 호출
-    List ingList = null;								
+    List ingList = null;
 	MaNengDBBean mnDB = new MaNengDBBean();
-	count = mnDB.getRefCount(memId+"_refrigerator", search);
-    if(count>0){
-    	 ingList = mnDB.getRefs(memId+"_refrigerator", search, startRow, endRow);
-    }
+	if(search == null || search.trim().isEmpty()){
+		count = mnDB.getRefCount(memId+"_refrigerator");						
+	    if(count>0){
+	    	 ingList = mnDB.getRefs(memId+"_refrigerator", startRow, endRow);
+	    }
+	}else{
+		count = mnDB.getRefCount(memId+"_refrigerator", search);
+	    if(count>0){
+	    	 ingList = mnDB.getRefs(memId+"_refrigerator", search, startRow, endRow);
+	}
     
     // list session 선언
     session.setAttribute("ingList", ingList);
@@ -136,6 +143,7 @@
    
     number=count-(currentPage-1)*pageSize; 
 %>
+<div class="center">
 <form name="f2" action="updatePro.jsp" method="post">
 <input type="hidden" id="search" name="search">
 <input type="text" id="keyword" /><input type="submit" value="검색" onclick="javascript:goSearch()"><br/>
@@ -236,6 +244,7 @@ if (endPage < pageCount) {  %>
 <input type="hidden" id="test" name="test">
 <input type="hidden" id="pageNum" name="pageNum">
 </form>
+</div>
 </body>
 <script type="text/javascript">
 var checkedVar = new Array();
@@ -243,10 +252,10 @@ var ids = [];
 var fields = document.getElementsByName("hiddenIDs[]");
 var search = "<%=search%>";
 
-if(search == null || search.trim().isEmpty()){
-	document.getElementById("keyword").value = search; 
+if(search != null){
+	document.getElementById("keyword").value = search;
+	document.getElementById("search").value = search;
 }
-
 
 for(var i = 0; i < fields.length; i++){
 	ids.push(fields[i].value);
@@ -351,7 +360,7 @@ function subtract(ingId){
 }
 
 function check(ingId){
-	var chName = document.getElementById("hiddenName"+ingId).value;
+	var chName = document.getElementById("hiddenName"+ingId);
 	var chAmount = document.getElementById("outputAmount"+ingId);
 	var chUnit = document.getElementById("outputUnit"+ingId);
 	var chFreshness = document.getElementById("outputFreshness"+ingId);	
@@ -364,7 +373,7 @@ function check(ingId){
 			checkedVar.splice(i, 1);
 			i--;
 			document.getElementById("test").value = checkedVar;
-			alert(chName + "이/가 체크 해제 되었습니다");
+			alert(chName.value + "이/가 체크 해제 되었습니다");
 			return true;
 		}
 	}
@@ -379,20 +388,19 @@ function check(ingId){
 				newArray.push(chFreshness.value);
 				checkedVar[checkedVar.length] = newArray;
 				document.getElementById("test").value = checkedVar;
-				alert(chName + "이/가 체크 되었습니다");
+				alert(chName.value + "이/가 체크 되었습니다");				
 				return true;
 			}else{
-				alert(chName + "의 유통기한을 기입해주세요");
+				alert(chName.value + "의 유통기한을 기입해주세요");
 				return false;
 			}
 		}else{
-			alert(chName + "의 단위를 기입해주세요");
+			alert(chName.value + "의 단위를 기입해주세요");
 			return false;
 		}
 	}else{
-		alert(chName + "의 수량을 기입해주세요");
+		alert(chName.value + "의 수량을 기입해주세요");
 		return false;
 	}		
-
 }
 </script>

@@ -10,14 +10,16 @@
 	
 	// 경고 메시지
 	String alert = "변경 사항이 없습니다!";
+	String insertInfo ="";
 
 	// memId 가져오기
 	String memId = (String)session.getAttribute("memId");
 	if (memId == null || memId.trim().isEmpty()) {%>
-	<script>
-	alert("아이디의 세션이 종료 되어서 aaa 계정으로 로그인합니다.");
-	</script>
-		<%memId = "aaa";
+		<script>
+			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
+			window.location="/myneng/menu.jsp"
+		</script>
+		<%
     }
 	
 	// tempIngList 호출
@@ -28,7 +30,6 @@
 	
 	// test(전 페이지 값) 호출
 	String test = request.getParameter("test");
-	System.out.println(test);
 	int testNum = 0;
     if(test!=null){
     	String [] testArray = test.split(",");
@@ -74,21 +75,26 @@
 						ing.setUnit(getUnit);
 						ing.setFreshness(getFreshness);
 						tempIngList.add(ing);
+
 					}
-					}else{
-						MaNengDataBean ing = new MaNengDataBean();
-						tempIngList = mnDB.getIngs(getName);
-						ing = (MaNengDataBean)tempIngList.get(0);
-						ing.setCheck("true");
-						ing.setAmount(getAmount);
-						ing.setUnit(getUnit);
-						ing.setFreshness(getFreshness);
-					}
+				}else{
+					MaNengDataBean ing = new MaNengDataBean();
+					tempIngList = mnDB.getIngs(getName);
+					ing = (MaNengDataBean)tempIngList.get(0);
+					ing.setCheck("true");
+					ing.setAmount(getAmount);
+					ing.setUnit(getUnit);
+					ing.setFreshness(getFreshness);
+				}
 				testNum+=1;
 			}
 		}
 	}  
   
+    for (int i = 0 ; i < tempIngList.size() ; i++) {	
+		MaNengDataBean ing = (MaNengDataBean)tempIngList.get(i);	// 총 재료 순서 고정임을 이용
+	}
+    
 	try{
 		if(tempIngList!=null){										// list 유효성 검사
 			for (int i = 0 ; i < tempIngList.size() ; i++) {	
@@ -96,33 +102,35 @@
 				if(mnDB.dateCompare(ing.getFreshness())<0){					// 분수 double값으로 변환 후 현재 시간과 비교
 				%>
 					<script type="text/javascript">
-						var check = confirm("<%=ing.getIngname()%>의 유통기한이 지났습니다! 계속 진행하겠습니까?");
-						if(!check){
-							window.location="insert.jsp";			// 유통기한 여부 confirm창
+						var dateCheck = confirm("<%=ing.getIngname()%>의 유통기한이 지났습니다! 계속 진행하겠습니까?");
+						if(!dateCheck){
+							alert("<%=insertInfo%>"+"<%=alert%>");
+							window.location="insert.jsp";
 						}
 					</script>
 				<%}
 				if(mnDB.getIngCount(ing.getIngname())>0){%>
 					<script type="text/javascript">
-						alert("<%=ing.getIngname()%>가 이미 있습니다! 유통기한 최대치로 갱신되었습니다");
+						alert("<%=ing.getIngname()%>이/가 이미 있습니다! 유통기한 최대치로 갱신하겠습니다!);
 					</script>
 				<%
 				}
 				mnDB.insertRef(ing, memId+ "_refrigerator");
-				alert = "냉장고가 수정 되었습니다!";
+				insertInfo += ing.getIngname()+" "+ing.getAmount()+ing.getUnit()+" ";
+				alert = "를 냉장고에 넣었습니다!";
+				}
+			}else{
+				alert = "입력이 잘못 되었습니다! 해당 담당자에게 문의해주세요!";		// session이 남거나 기타 오류 생길 경우
 			}
-		}else{
-			alert = "입력이 잘못 되었습니다! 해당 담당자에게 문의해주세요!";		// session이 남거나 기타 오류 생길 경우
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			if(session!=null){										
+				session.removeAttribute("tempIngList");								// session 종료
+			}
 		}
-	}catch(Exception e){
-		e.printStackTrace();
-	}finally{
-		if(session!=null){										
-			session.removeAttribute("tempIngList");								// session 종료
-		}
-	}
 %>
-<script>
-	alert("<%=alert%>");
+<script type="text/javascript">
+	alert("<%=insertInfo%>"+"<%=alert%>");
 	window.location="insert.jsp";
 </script>

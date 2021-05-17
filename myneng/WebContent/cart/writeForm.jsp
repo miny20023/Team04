@@ -5,8 +5,10 @@
 <jsp:include page="../menu.jsp"/>
 <title>게시판</title>
 <link href="style.css" rel="stylesheet" type="text/css">
-<script language="JavaScript" src="script.js"></script>
+<script language="JavaScript" src="script.js">
+</script>
 </head>
+
 
 <%
 	String id = (String)session.getAttribute("memId"); 
@@ -63,7 +65,10 @@
   <tr>
     <td  width="70"  bgcolor="<%=value_c%>" align="center" >내 용</td>
     <td  width="330" >
-     <textarea name="content" rows="13" cols="40"></textarea> </td>
+     <textarea name="content" rows="13" cols="40">
+공동 구매 링크 : 
+내용 입력 : 
+</textarea> </td>
   </tr>
   <tr>
     <td  width="70"  bgcolor="<%=value_c%>" align="center" >비밀번호</td>

@@ -12,6 +12,7 @@
 </head>
 <%
 	int comment_listNum = Integer.parseInt(request.getParameter("comment_listNum"));
+
 	int num = Integer.parseInt(request.getParameter("num"));  						
 	String pageNum = request.getParameter("pageNum");								
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -42,7 +43,9 @@
   </tr>
   <tr>
 	    <td align="center" width="125" bgcolor="<%=value_c%>">글내용</td>
-	    <td align="left" width="375" colspan="3"><pre><%=article.getContent()%></pre></td>
+	    <td align="left" width="375" colspan="3">
+	    <pre style="word-wrap: break-word;white-space: pre-wrap;white-space: -moz-pre-wrap;white-space: -pre-wrap;white-space: -o-pre-wrap;word-break:break-all;">
+<%=article.getContent()%></pre></td>
   </tr>
   <tr height="30">      
 	    <td colspan="4" bgcolor="<%=value_c%>" align="right" > 

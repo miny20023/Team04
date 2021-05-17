@@ -14,6 +14,7 @@ public class DietDAO {
 	private PreparedStatement pstmt = null;
 	private ResultSet rs = null;
 	
+	//식단추가
 	public void insertDiet(DietDTO dto, String id) {
 		try {
 			
@@ -33,7 +34,7 @@ public class DietDAO {
 		finally {ConnectionDAO.close(rs, pstmt, conn);}	
 	}
 	
-	//날짜바꾸기기능 x	
+	//날짜바꾸기기능 x, 식단내용만 수정가능	
 	public void updateDiet(DietDTO dto, String id) {
 		try {
 			conn=ConnectionDAO.getConnection();
@@ -48,6 +49,7 @@ public class DietDAO {
 		finally {ConnectionDAO.close(rs, pstmt, conn);}	
 	}
 	
+	//날짜입력하면 식단삭제
 	public void deleteDiet(String diet_date,String id) {
 		try {
 			conn=ConnectionDAO.getConnection();
@@ -87,17 +89,6 @@ public class DietDAO {
 			pstmt.setString(1, diet_date);
 			rs = pstmt.executeQuery();	
 			if(rs.next()) {
-				/*날짜 꺼내오기
-				Timestamp d = rs.getTimestamp("diet_date");
-				String month="";
-				if(d.getMonth()<9) {	month="0"+(d.getMonth()+1);}
-				else { month = d.getMonth()+1+""; }
-				String date ="";
-				if(d.getDate()<10) { date= "0"+d.getDate();}
-				else { date = d.getDate()+"";}
-				String day = (d.getYear()+1900)+"-"+month+"-"+date;
-				dto.setDiet_date(day);
-				*/
 				dto.setDiet_date(rs.getString("diet_date"));
 				dto.setBreakfast(rs.getString("breakfast"));
 				dto.setLunch(rs.getString("lunch"));
@@ -112,7 +103,7 @@ public class DietDAO {
 		return dto;
 	}
 	
-	//써둔 모든글을 출력하는 메서드
+	//써둔 모든글을 출력하는 메서드 // ?????
 	public ArrayList<DietDTO> getList(String id){
 		ArrayList<DietDTO> list = new ArrayList<DietDTO>();
 		try {
@@ -244,23 +235,53 @@ public class DietDAO {
 		return dto;
 	}
 	
-	/*
-	 * //검색한 식단 리스트출력 
+	
+	  //검색한 식단 리스트출력 
 		public List getSearchDiet(String diet_search, int start, int end,String id) {
 			List dietSearchList = null;
 			try {
 				conn = ConnectionDAO.getConnection();
-				String sql ="select * from "+id+"_diet "+;
+				String sql ="select diet_date,breakfast,lunch,dinner,r "
+							+"from (select diet_date,breakfast,lunch,dinner,rownum r "
+							+"from(select diet_date,breakfast,lunch,dinner "
+							+"from "+id+"_diet where breakfast like '%"+diet_search	+"+%' or lunch like '%"+diet_search
+							+"%' or dinner like '%"+diet_search+"%' order by diet_date desc) order by diet_date desc) where r>=? and r<=?";	
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setString(1, diet_search);
-				pstmt.setString(end, sql);
-				
-				
+				pstmt.setInt(1, start);
+				pstmt.setInt(2, end);
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					dietSearchList = new ArrayList(end);
+					 do {
+						DietDTO dto = new DietDTO();
+						dto.setDiet_date(rs.getString("diet_date"));	
+						dto.setBreakfast(rs.getString("breakfast"));	
+						dto.setLunch(rs.getString("lunch"));	
+						dto.setDinner(rs.getString("dinner"));	
+						dto.setYear(rs.getString("diet_date"));
+						dto.setMonth(rs.getString("diet_date"));
+						dto.setDay(rs.getString("diet_date"));
+						dietSearchList.add(dto); 
+					 }while(rs.next());
+				}
 			}catch(Exception e) {e.printStackTrace();}
 			finally {ConnectionDAO.close(rs, pstmt, conn);}
 			return dietSearchList;
 		}
 	
-	*/
+		public int getSearchDietCount(String diet_search, String id) {
+			int x=0;
+			try {
+				conn = ConnectionDAO.getConnection();
+				String sql ="select count(*) from "+id+"_diet where breakfast like '%"+diet_search+"%' or lunch like '%"+diet_search+"%' or dinner like '%"+diet_search+"%'";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				if(rs.next()) {
+					x=rs.getInt(1);//조건문에 알맞는 값의 수 추출
+				}
+			}catch(Exception e) {e.printStackTrace();}
+			finally {ConnectionDAO.close(rs, pstmt, conn);}
+			return x;
+		}
 	
 }

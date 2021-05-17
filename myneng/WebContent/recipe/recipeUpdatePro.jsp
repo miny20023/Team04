@@ -18,6 +18,7 @@
 		random_id = (int) session.getAttribute("random_id");
 	}
 	System.out.println("recipeUpdatePro의 random_id = "+random_id);
+	System.out.println("recipeUpdatePro의 pageNum = "+pageNum);
 	
 	String path = request.getRealPath("recipeSave");
 	String enc = "UTF-8";
@@ -55,6 +56,9 @@
 	
 %>
 <script>
+	var pageNum = '<%=pageNum%>';
+	var num = '<%=num%>';
+	var random_id = '<%=random_id%>';
 	alert("수정되었습니다.");
-	window.location="recipeContentForm.jsp?PageNum=<%=pageNum%>&num=<%=num %>&random_id=<%=random_id%>";
+	window.location="recipeContentForm.jsp?pageNum="+pageNum+"&num="+num+"&random_id="+random_id+"&comment_listNum=0";
 </script>

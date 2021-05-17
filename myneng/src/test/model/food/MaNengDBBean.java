@@ -139,7 +139,7 @@ public class MaNengDBBean implements Serializable {
 			MaNengDataBean ing = new MaNengDataBean();
 			try {
 				conn = ConnectionDAO.getConn();
-				String sql = "select * from ingredient where name = '%" + getName +"%'";
+				String sql = "select * from ingredient where name ="+getName;
 				ps = conn.prepareStatement(sql); 
 				rs = ps.executeQuery();
 				if (rs.next()) { 
@@ -323,22 +323,28 @@ public class MaNengDBBean implements Serializable {
 		try {
 			conn = ConnectionDAO.getConn(); 
 			sql = "select * from " + mem_id;
-			sql += " where name = ? and unit = ? and freshness = ?";
+			sql += " where name = ? and unit = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, mnData.getIngname());
 			ps.setString(2, mnData.getUnit());
-			ps.setString(3, mnData.getFreshness());
 			rs = ps.executeQuery();
 			if(rs.next()) {
-				int newAmount = Integer.parseInt(rs.getString("amount"))+ Integer.parseInt(mnData.getAmount());
-				mnData.setAmount(newAmount+"");
+				String newAmount = addFraction(rs.getString("amount"),mnData.getAmount());
+				String recent ="";
+				Date refFreshness=new SimpleDateFormat("yy-MM-dd").parse(rs.getString("freshness"));
+				Date newFreshness=new SimpleDateFormat("yy-MM-dd").parse(mnData.getFreshness());
+				if(newFreshness.compareTo(refFreshness)<0) {
+					recent = rs.getString("freshness");
+				}else {
+					recent = mnData.getFreshness();
+				}
 				sql = "update " + mem_id;
-				sql += " set amount = ? where name = ? and unit = ? and freshness = ?";
+				sql += " set amount = ?, freshness = ? where name = ? and unit = ?";
 				ps = conn.prepareStatement(sql);
-				ps.setString(1, mnData.getAmount());
-				ps.setString(2, mnData.getIngname());
-				ps.setString(3, mnData.getUnit());
-				ps.setString(4, mnData.getFreshness());
+				ps.setString(1, newAmount);
+				ps.setString(2, recent);
+				ps.setString(3, mnData.getIngname());
+				ps.setString(4, mnData.getUnit());
 				ps.executeUpdate();
 			}else {
 				sql = "insert into " + mem_id;
@@ -456,11 +462,10 @@ public class MaNengDBBean implements Serializable {
 				while(rs.next()) {	
 					if(ing_idList.contains(rs.getInt("ing_id")) ){	// 재료ID 'i'번 리스트의 재료 있는지 확인
 						for(int j = 0 ; j < tempIngList.size() ; j++) {
-						MaNengDataBean list = tempIngList.get(j);
+						MaNengDataBean list = tempIngList.get(j);						
 							if(list.getIng_id()==rs.getInt("ing_id")) {	// 레시피 ing와 맞는 ing 냉장고에서 호출
-								MaNengDBBean mnDB = new MaNengDBBean();
-								double ing = mnDB.calForm(list.getAmount());
-								double cook = mnDB.calForm(rs.getString("amount"));
+								double ing = convertFractionToDecimal(list.getAmount());
+								double cook = convertFractionToDecimal(rs.getString("amount"));
 								if(ing < cook) {			// 레시피와 냉장고 amount 비교
 									check = false;
 								}
@@ -490,27 +495,79 @@ public class MaNengDBBean implements Serializable {
 		double로 표현 가능한지 확인
 		분수가 있다면 소수 2째 자리에서 반올림
 	*/
-	public double calForm(String amount) {
+	public double convertFractionToDecimal(String amount) {
 		double value = 0;
-		try {
-			value = Double.parseDouble(amount);
-		}catch(Exception f) {
-			//f.printStackTrace();
-		}finally {
-			if(value==0) {
-				String[] fraction = amount.split("/");
-				String f1 = fraction[0];
-				String f2 = fraction[1];
+		String constant = "0";
+		if(amount.trim().contains(" ")) {
+			String[] fractionVal = amount.trim().split(" ");
+			constant = fractionVal[0];
+			String fraction = fractionVal[1];
+			
+			if(fraction!=null||fraction!="") {
+				String[] fractionDiv = fraction.split("/");
+				String f1 = fractionDiv[0];
+				String f2 = fractionDiv[1];
 				double numerator = Double.parseDouble(f1);
 				double denominator = Double.parseDouble(f2);
 				value = numerator/denominator;
 			}
+		}else{
+			if((amount.trim().contains("/")) ) {
+				String[] fractionDiv = amount.split("/");
+				String f1 = fractionDiv[0];
+				String f2 = fractionDiv[1];
+				double numerator = Double.parseDouble(f1);
+				double denominator = Double.parseDouble(f2);
+				value = numerator/denominator;
+			}else {
+				constant = amount;
+			}
 		}
+		value = value + Double.parseDouble(constant);
 		return value;
 	}
 	
-	public String calUtil(double refAmount, double insertAmount) {
-		String addAmount = "";
+	
+	// https://www.geeksforgeeks.org/convert-given-decimal-number-into-an-irreducible-fraction/
+	public String convertDecimalToFraction(double amount){
+	    double intVal = Math.floor(amount);
+	    double fVal = amount - intVal;
+	    double pVal = 100;
+	  
+	    double gcdVal = gcd(Math.round(fVal * pVal), pVal);
+	   
+	    int num = (int)(Math.round(fVal * pVal) / gcdVal);
+	    int deno = (int)(pVal / gcdVal);
+	  
+	    if(num == 0) {
+	    	return (int)(intVal * deno)+"";
+	    }
+	    return (int)(intVal * deno)+" "+num+"/"+deno;
+	}
+	
+	public double gcd(double a, double b)
+	{
+	    if (a == 0)
+	        return b;
+	    else if (b == 0)
+	        return a;
+	    if (a < b)
+	        return gcd(a, b % a);
+	    else
+	        return gcd(b, a % b);
+	}
+	
+	public String addFraction(String newAmount, String refAmount) {
+			double temp = convertFractionToDecimal(newAmount) + convertFractionToDecimal(refAmount);
+			String addAmount = convertDecimalToFraction(temp);
+			System.out.println(addAmount);
 		return addAmount;
 	}
+	
+	public String subtractFraction(String newAmount, String refAmount) {
+		double temp = convertFractionToDecimal(newAmount) - convertFractionToDecimal(refAmount);
+		String subtractAmount = convertDecimalToFraction(temp);
+		System.out.println(subtractAmount);
+	return subtractAmount;
+}
 }

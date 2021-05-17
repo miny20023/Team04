@@ -54,28 +54,31 @@ public class CookDAO {
 	}
 	
 	// 재료 Cook테이블에 insert(임시 rec_id 난수) 
-	public void insertIng(CookDTO cook) {
+	public boolean insertIng(CookDTO cook) {
+		boolean result = false;
 		try {
 			conn = ConnectionDAO.getConnection();
-			//pstmt = conn.prepareStatement("select * from cook where rec_id=? and ing_id=?");
-			//pstmt.setInt(1, cook.getRec_id());
-			//pstmt.setInt(2, cook.getIng_id());
-			//rs = pstmt.executeQuery();
-			//if(rs.next()) {				// 재료가 있으면
-			//	updateIng(cook);
-			//}else {
+			pstmt = conn.prepareStatement("select * from cook where rec_id=? and ing_id=?");
+			pstmt.setInt(1, cook.getRec_id());
+			pstmt.setInt(2, cook.getIng_id());
+			rs = pstmt.executeQuery();
+			if(rs.next()) {				// 재료가 있으면
+				result = updateIng(cook);
+			}else {
 				pstmt = conn.prepareStatement("insert into cook values(?,?,?,?)");
 				pstmt.setInt(1, cook.getRec_id());
 				pstmt.setInt(2, cook.getIng_id());
 				pstmt.setString(3, cook.getAmount());
 				pstmt.setString(4, cook.getUnit());
 				pstmt.executeUpdate();
-			//}
+				result = true;
+			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			ConnectionDAO.close(rs, pstmt, conn);
 		}
+		return result;
 	}
 	
 	// rec_id 난수인것을 실제 rec_id로 변경
@@ -193,7 +196,8 @@ public class CookDAO {
 	}
 	
 	// 재료 수정
-	public void updateIng(CookDTO cook) {
+	public boolean updateIng(CookDTO cook) {
+		boolean result = false;
 		try {
 			conn = ConnectionDAO.getConnection();
 			String sql = "select * from cook where rec_id=? and ing_id=?";
@@ -209,14 +213,16 @@ public class CookDAO {
 				pstmt.setInt(3, cook.getRec_id());
 				pstmt.setInt(4, cook.getIng_id());
 				pstmt.executeUpdate();
+				result = true;
 			}else {
-				insertIng(cook);
+				result = insertIng(cook);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
 		}finally {
 			ConnectionDAO.close(rs, pstmt, conn);
 		}
+		return result;
 	}
 	
 	//재료 삭제
@@ -248,5 +254,49 @@ public class CookDAO {
 		}
 	}
 	
+	//재료테이블에서 검색된 재료수 반환
+	public int getIngCount(String search) throws Exception {
+		int x=0;
+		try {
+			conn = ConnectionDAO.getConnection();
+			String sql = "select count(*) from ingredient where name like '%"+search+"%'";
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if (rs.next()) {
+				x=rs.getInt(1);
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionDAO.close(rs, pstmt, conn);
+		}
+		return x; 
+	}
 
+	// 검색된 재료 불러오기 - ingredient 테이블 이용
+	public List <CookDTO> getIng (String search, int startRow, int endRow) throws Exception {
+		List ingList = null;
+		try {
+			conn = ConnectionDAO.getConnection();
+			String sql = "select * from (select id,name,rownum r from (select * from ingredient where name like '%"+search+"%')) where r >= ? and r <= ?";
+			pstmt = conn.prepareStatement(sql); 
+			pstmt.setInt(1, startRow);
+			pstmt.setInt(2, endRow);			
+			rs = pstmt.executeQuery();
+				if (rs.next()) {
+					ingList = new ArrayList(); 
+					do{
+						CookDTO ing = new CookDTO();
+						ing.setIng_name(rs.getString("name"));
+						ingList.add(ing);
+					}while(rs.next());
+				}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionDAO.close(rs, pstmt, conn);
+		}	
+		return ingList;
+	}
+	
 }

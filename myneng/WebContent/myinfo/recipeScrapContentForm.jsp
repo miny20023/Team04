@@ -7,11 +7,12 @@
 <%@ page import="cook.bean.CookDTO" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
+<%@ include file = "../menu.jsp" %>
 <body bgcolor="#f0efea">
 <h1> 찜한 레시피 보기</h1>
 
 <%
-	String id = (String) session.getAttribute("memId");
+	id = (String) session.getAttribute("memId");
 
 	int num = Integer.parseInt(request.getParameter("num"));
 	String pageNum = request.getParameter("pageNum");
@@ -84,5 +85,6 @@
 
 </center>
 </body>
+
 
 

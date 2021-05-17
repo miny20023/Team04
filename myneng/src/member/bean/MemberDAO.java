@@ -60,8 +60,6 @@ public class MemberDAO {
 			pstmt = conn.prepareStatement(sql);
 			//1아이디, 2이름,3비밀번호, 40,5이메일,6전화번호,7주소 8group_id 9.scrap_id 10cart_id 11 그룹 비밀번호
 			//'aaa_refrigerator','aaa_scrap','aaa_cart'		
-			
-			
 			pstmt.setString(1, dto.getId());
 			pstmt.setString(2, dto.getName());
 			pstmt.setString(3, dto.getPw());
@@ -82,32 +80,8 @@ public class MemberDAO {
 		finally {ConnectionDAO.close(rs,pstmt,conn);}
 	}
 	
-	/*냉장고 추가하기
-	CREATE TABLE aaa_refrigerator (
-		    name       VARCHAR2(100),
-		    ing_id     NUMBER,
-		    amount     VARCHAR2(10),
-		    unit       VARCHAR2(10),
-		    freshness  VARCHAR2(100),
-		    FOREIGN KEY ( ing_id )
-		        REFERENCES ingredient ( id )
- create table [table 이름] (colum1 이름 colum1 type 제약조건, ...... )
- 
- 
- + "("+ "no int primary key auto_increment,"
 
-							+ "name varchar(10)"
-
-							+ ")";
-
-
-
-출처: https://sourcestudy.tistory.com/325 [study]
- 
- 
-*/
-	//    public void createTable() throws SQLException {
-
+//가입시 개인냉장고 테이블 생성
 	public void createRefrigerator(String id) { 
 		try {
 			conn = ConnectionDAO.getConnection();
@@ -129,19 +103,7 @@ public class MemberDAO {
 		finally {ConnectionDAO.close(rs,pstmt,conn);}
 	}
 	
-
-	
-	/*
-	
-	 
-	 *내가 찜한레시피 테이블 추가하기
-	 *CREATE TABLE aaa_scrap (
-    id      NUMBER PRIMARY KEY,
-    rec_id  NUMBER,
-    FOREIGN KEY (rec_id)
-        REFERENCES recipe ( num )
-);
-*/
+	//가입시 찜한레시피(스크랩) 테이블 생성
 	public void createScrap(String id) {
 		try {
 			conn=ConnectionDAO.getConnection();
@@ -157,15 +119,7 @@ public class MemberDAO {
 		finally {ConnectionDAO.close(rs, pstmt, conn);	}
 	}
 
-	
-/*	
-	장보기 메모테이블 추가하기
-	CREATE TABLE aaa_cart (
-    id      NUMBER PRIMARY KEY,
-    ing_id  NUMBER,
-    FOREIGN KEY ( ing_id )
-        REFERENCES ingredient ( id )
-);	 */
+	//가입시 장보기메모(cart) 테이블 생성
 	public void createCart(String id) {
 		try {
 			conn=ConnectionDAO.getConnection();
@@ -180,6 +134,7 @@ public class MemberDAO {
 		finally {ConnectionDAO.close(rs, pstmt, conn);}
 	}
 	
+	//가입시 식단테이블 생성
 	public void createDiet(String id) {
 		try {
 			conn=ConnectionDAO.getConnection();
@@ -187,13 +142,80 @@ public class MemberDAO {
 						+"diet_date date,"
 						+ "breakfast  VARCHAR2(500),"
 						+ "lunch VARCHAR2(500),"
-						+ "dinner VARCHAR2(500))";
+						+ "dinner VARCHAR2(500),"
+						+ "year NUMBER,"
+						+ "month NUMBER,"
+						+ "day NUMBER)";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.executeQuery();			
 		}catch(Exception e) {e.printStackTrace();}
 		finally {ConnectionDAO.close(rs, pstmt, conn);}
 	}
 	
+	
+	//---------추가된부분 2021-05-13 1차 통합이후 시작--------------------------------
+	//가입시 이메일 중복검사 (아이디, 비밀번호 검색시 이메일값을 받기위해서 중복x)
+	public boolean emailCheck(String email) {
+		boolean result = true;//email 사용가능
+		
+		try {
+			conn=ConnectionDAO.getConnection();
+			pstmt=conn.prepareStatement("select* from member where email=?"); 
+			pstmt.setString(1, email);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = false; //email 사용 불가능
+			}
+					
+		}catch(Exception e){e.printStackTrace();}
+		finally {ConnectionDAO.close(rs, pstmt, conn);}	
+		return result;
+	}
+	
+	//id찾기기능  이름,이메일주소 
+		public String findId(String name, String email) {
+			String id= null;
+			try {
+				conn = ConnectionDAO.getConnection();
+				String sql = "select id from member where name=? and email=?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, name);
+				pstmt.setString(2, email);
+				rs = pstmt.executeQuery();
+				if(rs.next()) {	id =rs.getString("id");}
+			}catch(Exception e) {e.printStackTrace();}
+			finally {ConnectionDAO.close(rs, pstmt, conn);}
+			return id;
+		}
+		
+		//pw찾기 기능  이름, 이메일주소, 아이디
+		public String findPw(String id, String name, String email){
+			String pw =null;
+			try {
+				conn = ConnectionDAO.getConnection();
+				String sql ="select password from member where id=? and name=? and email=?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, id);
+				pstmt.setString(2, name);
+				pstmt.setString(3, email);
+				rs = pstmt.executeQuery();
+				if(rs.next()){ pw = rs.getString("password");}	
+			}catch(Exception e) { e.printStackTrace();}
+			finally { ConnectionDAO.close(rs, pstmt, conn);}
+			return pw;
+		}
+	
+	
+	
+		
+		
+		
+		
+	//---------추가된부분 2021-05-13 1차 통합이후  끝--------------------------------
+
+	
+	
+	//
 	public MemberDTO getMember(String id) {
 		MemberDTO dto = null;
 		try {

@@ -92,7 +92,7 @@
     	<tr height = "30">
     		<td align="center" width="50"> <%=article.getNum()%></td>
     		<td width="250" >
-    			<a href="content.jsp?num=<%=article.getNum()%>&pageNum=<%=currentPage%>&comment_listNum=<%=comment_listNum%>">
+    			<a href="content.jsp?num=<%=article.getNum()%>&pageNum=<%=currentPage%>&comment_pageNum=1&comment_listNum=<%=comment_listNum%>">
     				<%=article.getSubject()%>
     			</a>
 		</td>

@@ -4,6 +4,7 @@
 <%@ page import = "java.util.List" %>
 <%@ page import = "java.util.ArrayList" %>
 <%@ include file = "../menu.jsp" %>
+<link href="form.css" rel="stylesheet" type="text/css">
 <body bgcolor="#f0efea">
 
 <%
@@ -122,6 +123,7 @@
 
     number=count-(currentPage-1)*pageSize; 
 %>
+<div class="center">
 <form name="f2" action="updateSearch.jsp" method="post">
 <input type="hidden" id="search" name="search">
 <input type="text" id="keyword" /><input type="submit" value="검색" onclick="javascript:goSearch()"><br/>
@@ -203,6 +205,7 @@ if (endPage < pageCount) {  %>
 <input type="hidden" id="test" name="test">
 <input type="hidden" id="pageNum" name="pageNum">
 </form>
+</div>
 </body>
 <script type="text/javascript">
 var checkedVar = new Array();
@@ -311,7 +314,7 @@ function subtract(ingId){
 }
 
 function check(ingId){
-	var chName = document.getElementById("hiddenName"+ingId).value;
+	var chName = document.getElementById("hiddenName"+ingId);
 	var chAmount = document.getElementById("outputAmount"+ingId);
 	var chUnit = document.getElementById("outputUnit"+ingId);
 	var chFreshness = document.getElementById("outputFreshness"+ingId);	
@@ -324,7 +327,7 @@ function check(ingId){
 			checkedVar.splice(i, 1);
 			i--;
 			document.getElementById("test").value = checkedVar;
-			alert(chName + "이/가 체크 해제 되었습니다");
+			alert(chName.value + "이/가 체크 해제 되었습니다");
 			return true;
 		}
 	}
@@ -339,20 +342,19 @@ function check(ingId){
 				newArray.push(chFreshness.value);
 				checkedVar[checkedVar.length] = newArray;
 				document.getElementById("test").value = checkedVar;
-				alert(chName + "이/가 체크 되었습니다");
+				alert(chName.value + "이/가 체크 되었습니다");				
 				return true;
 			}else{
-				alert(chName + "의 유통기한을 기입해주세요");
+				alert(chName.value + "의 유통기한을 기입해주세요");
 				return false;
 			}
 		}else{
-			alert(chName + "의 단위를 기입해주세요");
+			alert(chName.value + "의 단위를 기입해주세요");
 			return false;
 		}
 	}else{
-		alert(chName + "의 수량을 기입해주세요");
+		alert(chName.value + "의 수량을 기입해주세요");
 		return false;
 	}		
-
 }
 </script>

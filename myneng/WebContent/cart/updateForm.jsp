@@ -22,7 +22,7 @@
 <body bgcolor="<%=bodyback_c%>">  
 <center><b>글수정</b>
 <br>
-<form method="post" name="writeform" action="updatePro.jsp?pageNum=<%=pageNum%>" onsubmit="return writeSave()">
+<form method="post" name="writeform" action="updatePro.jsp?num=<%=num %>&pageNum=<%=pageNum%>" onsubmit="return writeSave()">
 <table width="400" border="1" cellspacing="0" cellpadding="0"  bgcolor="<%=bodyback_c%>" align="center">
   <tr>
     <td  width="70"  bgcolor="<%=value_c%>" align="center">이 름</td>
@@ -35,11 +35,7 @@
     <td align="left" width="330">
        <input type="text" size="40" maxlength="50" name="subject" value="<%=article.getSubject()%>"></td>
   </tr>
-  <tr>
-    <td  width="70"  bgcolor="<%=value_c%>" align="center">Email</td>
-    <td align="left" width="330">
-       <input type="text" size="40" maxlength="30" name="email" value="<%=article.getEmail()%>"></td>
-  </tr>
+
   <tr>
     <td  width="70"  bgcolor="<%=value_c%>" align="center" >내 용</td>
     <td align="left" width="330">

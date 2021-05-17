@@ -11,8 +11,9 @@ public class CommentDBBean
 	private PreparedStatement pstmt = null;
 	private ResultSet rs = null;
 	
-	public void insertArticle_comment(CommentDataBean article, int comment_listNum) throws Exception {
+	public int insertArticle_comment(CommentDataBean article, int comment_listNum) throws Exception {
 		String sql="";
+		int dbRowNum2 = 0;
 		try {
 			if(comment_listNum == 0)
 			{
@@ -29,6 +30,14 @@ public class CommentDBBean
 			pstmt.setInt(5, article.getRe_step());
 			pstmt.setInt(6, article.getRe_level());
 			pstmt.executeUpdate();
+			
+			sql = "select count(*) from "+tableNum;
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			if(rs.next())
+			{
+				dbRowNum2=rs.getInt("count(*)");
+			}
 			}
 			else
 			{
@@ -47,11 +56,13 @@ public class CommentDBBean
 				int dbRe_level = 0;
 				int insertRe_step=0;
 				int maxRe_step=0;
+				int dbRowNum = 0;
 				if(rs.next())
 				{
 					dbRef = rs.getInt("ref");
 					dbRe_step = rs.getInt("re_step");
 					dbRe_level = rs.getInt("re_level");
+					dbRowNum = rs.getInt("r");
 					sql = "select MAX(re_step) from "+tableNum+" where ref = "+dbRef;
 					pstmt = conn.prepareStatement(sql);
 					rs = pstmt.executeQuery();
@@ -66,11 +77,29 @@ public class CommentDBBean
 					}
 					else
 					{
-						sql = "update "+tableNum+" set re_step=re_step+1 where ref="+dbRef+"and Re_step > ?";
+						sql = "select comment_id,comment_text,reg_date,ref,re_step,re_level,r "
+								+"from (select comment_id,comment_text,reg_date,ref,re_step,re_level,rownum r "
+									     +"from (select comment_id,comment_text,reg_date,ref,re_step,re_level "
+									            +"from "+tableNum+" order by ref asc, re_step asc) order by ref asc, re_step asc ) "
+									+"where r > "+dbRowNum+"and ref = " + dbRef;
 						pstmt = conn.prepareStatement(sql);
-						pstmt.setInt(1, dbRe_step);
+						rs = pstmt.executeQuery();
+						int dbRe_step2 = 0;
+						while(rs.next())
+						{
+							if(rs.getInt("re_level") == dbRe_level)
+							{	
+								dbRe_step2 = rs.getInt("re_step");
+								dbRowNum2 = rs.getInt("r");
+								break;
+							}
+						}
+						sql = "update "+tableNum+" set re_step=re_step+1 where ref=? and Re_step >= ?";
+						pstmt = conn.prepareStatement(sql);
+						pstmt.setInt(1, dbRef);
+						pstmt.setInt(2, dbRe_step2);
 						pstmt.executeUpdate();
-						insertRe_step = dbRe_step+1;
+						insertRe_step = dbRe_step2;
 					}
 				}
 				
@@ -92,11 +121,12 @@ public class CommentDBBean
 		} finally {
 			ConnectionDAO.close(rs, pstmt, conn);
 		}
+		return dbRowNum2;
 	}
 	
-	public int deleteArticle_comment(int num,int listNum, String id,int pageNum) throws Exception
+	public int deleteArticle_comment(int num,int listNum, String id,int comment_pageNum) throws Exception
 	{
-		int getListNum = listNum + (10*(pageNum-1));
+		int getListNum = listNum + (10*(comment_pageNum-1));
 		int x = -1;
 		String seqName = "groupbuying_comment_"+num+"_seq";
 		String tableName = "groupbuying_comment_"+num;

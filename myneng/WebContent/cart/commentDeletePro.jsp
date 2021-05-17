@@ -10,6 +10,7 @@
 	int listNum = Integer.parseInt(request.getParameter("listNum"));
 	int pageNum = Integer.parseInt(request.getParameter("pageNum"));
 	String id = (String)session.getAttribute("memId");
+	int comment_pageNum = Integer.parseInt(request.getParameter("comment_pageNum"));
 	
 	CommentDBBean dbPro = new CommentDBBean();
 	int check = dbPro.deleteArticle_comment(num,listNum, id,pageNum);
@@ -18,11 +19,11 @@
 	{
 		if(check == 1)
 		{
-			response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_listNum=0");
+			response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_pageNum="+comment_pageNum+"&comment_listNum=0");
 		}
 		else if(check == 2)
 		{
-			response.sendRedirect("content.jsp?num="+num+"&pageNum="+(pageNum-1)+"&comment_listNum=0");
+			response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_pageNum="+(comment_pageNum-1)+"&comment_listNum=0");
 		}
 		else
 		{

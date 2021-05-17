@@ -18,7 +18,7 @@
 	System.out.println(num +"  "+ pageNum +"   "+ check);
     if(check==1){
 %>
-	  <meta http-equiv="Refresh" content="0;url=content.jsp?num=<%=num %>&pageNum=<%=pageNum%>&comment_listNum=0" >
+	  <meta http-equiv="Refresh" content="0;url=content.jsp?num=<%=num %>&pageNum=<%=pageNum%>&comment_pageNum=1&comment_listNum=0" >
 <% }else{%>
       <script language="JavaScript">      
       <!--      
