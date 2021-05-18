@@ -13,7 +13,7 @@
 	관리자 비밀번호 확인 : <input type="password" name="password" />
 				<input type="hidden" name="num" value="<%=num %>" />
 				<input type="hidden" name="status" value="<%=status %>" />
-				<input type="submit" value="승  인" /> <br />
+				<input type="submit" value="확  인" /> <br />
 				<input type="button" value="글목록" onclick="window.location='recipeListForm.jsp?PageNum=<%=pageNum %>'" />
 </form>
 </body>

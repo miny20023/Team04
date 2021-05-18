@@ -2,32 +2,31 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<script type="text/javascript"> 
-//<![CDATA[
-function calcHeight(){
- //find the height of the internal page
 
- var the_height=document.getElementById('the_iframe').contentWindow.document.body.scrollHeight;
-
- //change the height of the iframe
- document.getElementById('the_iframe').height=the_height;
-
- //document.getElementById('the_iframe').scrolling = "no";
- document.getElementById('the_iframe').style.overflow = "hidden";
-}
-//
-</script>
 <body>
-
-
-	<iframe name="header" src="menu.jsp" onload="calcHeight();" scrolling="no" frameborder="0"
-			style="overflow-x:hidden; overflow:auto; width:100%; min-height:350px;"></iframe>
-	<iframe name="content" src="center.jsp" onload="calcHeight(); scrolling="auto" frameborder="0"
-			style="overflow-x:hidden; overflow:auto; width:100%; min-height:500px;"></iframe>
-
+<table border="0">
+    <tr><td>
+        <input type="button" name="11" [안내]태그제한으로등록되지않습니다-xxonClick="fnSetImg('http://wstatic.naver.com/w/n_c600.gif');" value="이미지추가" class="EditorImg" />
+    </td></tr>
+    <tr><td>
+        <textarea style="display：none" name="comment"></textarea>
+        <iframe width="800" height="650" id="Editor"></iframe>
+    </td></tr>
+</table>
 </body>
+
+<script type="text/xxjavascript" language="xxjavascript">
+    var fm= frames.Editor;
+    fm.document.designMode = "ON";
+
+
+ 
+
+    function fnSetImg(imgPath) {
+        // 이미지 태그 삽입
+        var str = "<img src="+ imgPath +" />";
+        fm.focus();
+        fm.document.selection.createRange().pasteHTML(str);
+    }
+</script>
 </html>

@@ -17,25 +17,27 @@ CookDAO daoc = new CookDAO();
 List ingList = (List) session.getAttribute("ingList");
 List ingList2 = (List) session.getAttribute("ingList2");
 
-if(ingList != null){
+if(ingList != null){				// 기존 재료 삭제시 random_id+100000에 임시저장
 	for (int i = 0 ; i < ingList.size() ; i++) {	
 		CookDTO cook = (CookDTO)ingList.get(i);
 		if(request.getParameter("check"+i)!=null){
-			c = "냉장고에서 꺼냈습니다!";
 			cook.setAmount(request.getParameter("amount"+i));
 			cook.setUnit(request.getParameter("unit"+i));
 			cook.setRec_id(rec_id);
-			daoc.deleteIng(cook);		
+			daoc.changeRec_id(random_id+1000000, rec_id, cook);	
 		}
 	}
 }
-if(ingList2 != null){
+if(ingList2 != null){			// 새로 추가한 재료 삭제
 	for(int i = 0; i < ingList2.size(); i++){
 		CookDTO cook2 = (CookDTO)ingList2.get(i);
 		if(request.getParameter("check2"+i) != null){
 			cook2.setAmount(request.getParameter("amount2"+i));
 			cook2.setUnit(request.getParameter("unit2"+i));
 			cook2.setRec_id(random_id);
+			if(daoc.isUpdate(random_id, rec_id)){			// 기존재료 수정한뒤 삭제 확인
+				daoc.changeRec_id(random_id+1000000, rec_id, cook2);	
+			}
 			daoc.deleteIng(cook2);
 		}
 	}

@@ -178,9 +178,9 @@ if(id!=null){%>
  </li>
  <li><a href="#">장보기</a>
  	<ul>
-     <li><a href="/myneng/cart/mart.jsp">마트위치찾기</a></li>
-     <li><a href="/myneng/cart/groupBuying.jsp">공동구매</a></li>
-     <li><a href="#">장보기 정보 공유</a></li>
+     <li><a href="/myneng/cart/martMap/mart.jsp">마트위치찾기</a></li>
+     <li><a href="/myneng/cart/groupBuying/groupBuying.jsp">공동구매</a></li>
+     <li><a href="/myneng/cart/shoppingInfoShare/shoppingInfoShare.jsp">장보기 정보 공유</a></li>
     </ul>	
  </li>
  <%

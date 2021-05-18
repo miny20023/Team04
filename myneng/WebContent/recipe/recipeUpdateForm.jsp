@@ -2,6 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ page import="recipe.bean.RecipeDTO" %>
 <%@ page import="recipe.bean.RecipeDAO" %>
+<%@ page import="cook.bean.CookDAO" %>
+<%@ page import="cook.bean.CookDTO" %>
+<%@ page import="java.util.List" %>
 <%@ include file = "../menu.jsp" %>
 <body bgcolor="#f0efea">
 <% 
@@ -14,7 +17,11 @@
 	System.out.println("recipeUpdateForm의 random_id = "+random_id);
 	
 	RecipeDAO dao = new RecipeDAO();
+	CookDAO daoc = new CookDAO();
+	
 	RecipeDTO recipe = dao.getRecipes(num);
+	List <CookDTO> ingList = daoc.getIng(num);
+	
 %>
  
 <center>
@@ -44,6 +51,11 @@
 <tr>
 	<td align="center">재료</td>
 	<td colspan="3" align="center">
+	기존 입력 재료: <%for(int i = 0; i < ingList.size(); i++){
+				CookDTO ing = (CookDTO) ingList.get(i); %>
+				<%=ing.getIng_name()+" " %> 
+			<%} %><br />
+	재료 수정 확인 : <label id="ings_name"></label> <br />
 		<input type="button" value="재료수정" onclick="window.open('recipeIngredientUpdateForm.jsp?num=<%=num %>&random_id=<%=random_id %>','재료입력','width=600,height=600')"/>
 	</td>
 </tr>
@@ -62,6 +74,7 @@
 </tr>
 </table>
 <input type="submit" value="수  정" />
+<input type="button" value="수정취소" onclick="window.location='recipeCanclePro.jsp'" />
 <input type="button" value="목  록" onclick="window.location='recipeListForm.jsp?PageNum=<%=pageNum %>'" />
 </form>
 </center>

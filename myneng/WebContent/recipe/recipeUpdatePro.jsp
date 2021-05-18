@@ -51,6 +51,7 @@
 	if(random_id != 0){
 		CookDAO daoc = new CookDAO();
 		daoc.changeRec_id(random_id, num); 		// 임시 rec_id값 0을 실제 rec_id로 변경	
+		daoc.deleteIng(random_id+100000);
 	}
 	session.removeAttribute("random_id");
 	

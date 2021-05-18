@@ -2,6 +2,7 @@ package recipe.bean;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -537,7 +538,123 @@ public class RecipeDAO {
 					ConnectionDAO.close(rs, pstmt, conn);
 				}
 				return x;
-			}	
+			}
+			
+	// 관리자 오늘 올라온 글 수 반환
+	public int getRecipeCount(String today) {
+		int x = 0;
+		String sql = "";
+		try {
+			conn = ConnectionDAO.getConnection();
+			sql = "select count(*) from recipe where status in(1, 2) and day>=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, today);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				x = rs.getInt(1);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			ConnectionDAO.close(rs, pstmt, conn);
+		}
+		return x;
+	}
+
+	// 관리자 오늘 올라온 글 목록 반환
+	public List <RecipeDTO> getRecipes(int start, int end, String today) {
+		List <RecipeDTO> recipeList = null;
+		String sql = "";
+			try {
+				conn = ConnectionDAO.getConnection();
+				sql = "select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, r " 
+						+"from (select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, rownum r "
+						+"from (select * from recipe where status in(1, 2) and day>=? order by num desc)) where r >=? and r <=?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, today);
+				pstmt.setInt(2, start);
+				pstmt.setInt(3, end);
+				rs = pstmt.executeQuery();
+				recipeList = new ArrayList <RecipeDTO> (end);
+				while(rs.next()) {
+					RecipeDTO recipe = new RecipeDTO();
+					recipe.setNum(rs.getInt("num"));
+					recipe.setName(rs.getString("name"));
+					recipe.setProcess(rs.getString("process"));
+					recipe.setWriter(rs.getString("writer"));
+					recipe.setDifficulty(rs.getInt("difficulty"));
+					recipe.setImage(rs.getString("image"));
+					recipe.setCooking_time(rs.getInt("cooking_time"));
+					recipe.setDay(rs.getTimestamp("day"));
+					recipe.setReadcount(rs.getInt("readcount"));
+					recipe.setReccommend(rs.getInt("reccommend"));
+					recipe.setStatus(rs.getInt("status"));
+					recipeList.add(recipe);
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				ConnectionDAO.close(rs, pstmt, conn);
+			}
+		return recipeList;
+	}
 	
-	
+	// 관리자 삭제된 글 수 반환
+	public int getRecipeCount(int status) {
+		int x = 0;
+		String sql = "";
+		try {
+			conn = ConnectionDAO.getConnection();
+			sql = "select count(*) from recipe where status=?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, status);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				x = rs.getInt(1);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			ConnectionDAO.close(rs, pstmt, conn);
+		}
+		return x;
+	}
+
+	// 관리자 삭제된 글 목록 반환
+	public List <RecipeDTO> getRecipes(int start, int end, int status) {
+		List <RecipeDTO> recipeList = null;
+		String sql = "";
+			try {
+				conn = ConnectionDAO.getConnection();
+				sql = "select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, r " 
+						+"from (select num, name, process, writer, difficulty, image, cooking_time, day, readcount, reccommend, status, rownum r "
+						+"from (select * from recipe where status=? order by num desc)) where r >=? and r <=?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, status);
+				pstmt.setInt(2, start);
+				pstmt.setInt(3, end);
+				rs = pstmt.executeQuery();
+				recipeList = new ArrayList <RecipeDTO> (end);
+				while(rs.next()) {
+					RecipeDTO recipe = new RecipeDTO();
+					recipe.setNum(rs.getInt("num"));
+					recipe.setName(rs.getString("name"));
+					recipe.setProcess(rs.getString("process"));
+					recipe.setWriter(rs.getString("writer"));
+					recipe.setDifficulty(rs.getInt("difficulty"));
+					recipe.setImage(rs.getString("image"));
+					recipe.setCooking_time(rs.getInt("cooking_time"));
+					recipe.setDay(rs.getTimestamp("day"));
+					recipe.setReadcount(rs.getInt("readcount"));
+					recipe.setReccommend(rs.getInt("reccommend"));
+					recipe.setStatus(rs.getInt("status"));
+					recipeList.add(recipe);
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				ConnectionDAO.close(rs, pstmt, conn);
+			}
+		return recipeList;
+	}	
 }

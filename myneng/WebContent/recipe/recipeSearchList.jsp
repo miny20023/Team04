@@ -87,10 +87,10 @@
 	    		<a href="recipeContentForm.jsp?num=<%=recipe.getNum()%>&pageNum=<%=currentPage%>&random_id=0&comment_listNum=0">
 	    			<%if(recipe.getReccommend() >= 5){%> <font color="red"> ☆<%} %><%=recipe.getName() %>
 	    			<%if(recipe.getReccommend() >= 5){%> ★</font> <%} 			// 인기글(추천수 5이상)%><a>
-	    			<%if(status == 1 && recipe.getWriter().equals(id)){ %> 미승인 <%} %>
+	    			<%if(status == 1 && (recipe.getWriter().equals(id) || master == 2)){ %> 미승인 <%} %>
 	    	</td>
 	    	<td align="center" width="100"><%=recipe.getWriter() %></td>
-	    	<td align="center" width="100"><%=recipe.getDay() %></td>
+	    	<td align="center" width="100"><%=sdf.format(recipe.getDay()) %></td>
 	    	<td align="center" width="50"><%=recipe.getReadcount() %></td>
 	    	<td align="center" width="50"><%=recipe.getReccommend() %></td>
 	

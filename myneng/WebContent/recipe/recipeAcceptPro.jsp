@@ -9,6 +9,7 @@
 	int num = Integer.parseInt(request.getParameter("num"));
 	String password = request.getParameter("password");
 	int status = Integer.parseInt(request.getParameter("status"));
+	String url = (String) session.getAttribute("url");
 	
 	RecipeDAO dao = new RecipeDAO();
 	MemberDAO daom = new MemberDAO();
@@ -22,7 +23,7 @@
 	if(result){%>
 		<script>
 		alert("처리되었습니다.");
-		window.location = "recipeContentForm.jsp?num=<%=num%>&pageNum=<%=pageNum%>&random_id=0&comment_listNum=0";
+		window.location = '<%=url%>';
 		</script>
 <%	}else{%>
 		<script>

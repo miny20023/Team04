@@ -29,7 +29,6 @@
 		int difficulty = Integer.parseInt(mr.getParameter("difficulty"));
 		String image = mr.getFilesystemName("image");
 		int cooking_time = Integer.parseInt(mr.getParameter("cooking_time"));
-		String ingredient = mr.getParameter("ingredient"); // 재료는 나중에 재료입력으로 다시 구현
 		
 		RecipeDAO dao = new RecipeDAO();
 		CookDAO daoc = new CookDAO();

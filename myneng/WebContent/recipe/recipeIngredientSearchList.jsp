@@ -47,6 +47,7 @@
 	<input type="submit" value="검색" />
 	<input type="button" value="재료전체목록" onclick="window.location='recipeIngredientInsertForm.jsp?rec_id=<%=rec_id%>&pageNum=<%=pageNum%>&random_id=<%=random_id%>'" /> <br/>
 </form>
+<%if(count > 0) {%>
 <form name="f2" action="recipeIngredientInsertPro.jsp?" method="post">
 <table> 
 	<tr> 
@@ -121,4 +122,7 @@ if (endPage < pageCount) {  %>
 		
 	}
 </script>
+<%} else{ %>
+	검색하신 재료가 없습니다.
+<%} %>
 

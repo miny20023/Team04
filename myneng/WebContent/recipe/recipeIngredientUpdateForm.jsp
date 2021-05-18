@@ -7,6 +7,7 @@
 <%
 	request.setCharacterEncoding("UTF-8");
 
+	String ings_name="";
 	String id = (String) session.getAttribute("memId");
 	int rec_id = Integer.parseInt(request.getParameter("num"));
 	int random_id = Integer.parseInt(request.getParameter("random_id"));
@@ -46,26 +47,27 @@
     
     number=count-(currentPage-1)*pageSize;
 %>
-<b>재료 목록(전체 재료:<%=count%>)</b><br/>
+<b>재료 목록</b><br/>
 <form name=f1 action="recipeIngredientUpdatePro.jsp?rec_id=<%=rec_id %>" method="post">
-<table> 
-	<tr> 
-		<td>추가</td>
-		<td>재료명</td> 
-	    <td>수량</td>
-	    <td>단위</td>
-    </tr>
-</table>
+
 <%if (count == 0) {%>
-<table>
+	<table> 
 	<tr>
    		<td colspan="5">
    			재료를 추가해 주세요
    		</td>
    	</tr>
-</table>
-<%}else{	
-	// 기존 재료 불러오기
+   	</table> 
+   	<input type="button" value="추가하기" onclick="window.open('recipeIngredientInsertForm.jsp?rec_id=<%=rec_id%>&random_id=<%=random_id %>','재료추가','width=600,height=600')" />
+<%}else{%>
+	<table> 
+	<tr> 
+		<td align="center">재료명</td> 
+   		<td align="center">수량</td>
+    	<td align="center">단위</td>
+    	<td align="center">선택</td>
+	</tr>
+<%	// 기존 재료 불러오기
 	if(daoc.getIngCount(rec_id) > 0){
 		for (int i = 0 ; i < ingList.size() ; i++) {
 			CookDTO ing = (CookDTO)ingList.get(i);
@@ -89,15 +91,14 @@
 			String e = "";
 			String f = "";
 			
-			String w = ing.getUnit();%>
-			<table> 
+			String w = ing.getUnit();
+			ings_name +=ing.getIng_name()+" ";%>
 				<tr>
-					<td><input type="checkbox" name="check<%=i%>" value="true"></td>
 			    	<td><%=ing.getIng_name()%></td>   	
 			    	<td>
-			    	<button type="button" onclick="return a();" >+</button>
+			    	<button type="button" onclick="javascript:plus('amount'+'<%=i %>');" >+</button>
 			    	<input type="text" name="amount<%=i%>" value="<%=ing.getAmount()%>" size="1">
-			    	<button type="button" onclick="return s();">-</button>
+			    	<button type="button" onclick="javascript:minus('amount'+'<%=i %>');" >-</button>
 			    	</td>
 	    	<td>
 	<%
@@ -125,8 +126,8 @@
 			<option value="마리" <%=f%>>마리</option>
 			</select>
 			</td>
+			<td align="center"><input type="checkbox" name="check<%=i%>" value="true"></td>
 		</tr>
-		</table>	
 <%	}}}
 	
 	// 새로 추가한 재료 불러오기
@@ -140,15 +141,15 @@
 			String e = "";
 			String f = "";
 			
-			String w = ing2.getUnit();%>
-		<table>
+			String w = ing2.getUnit();
+			ings_name +=ing2.getIng_name()+" ";
+			%>
 		<tr>
-			<td><input type="checkbox" name="check2<%=i%>" value="true"></td>
 	    	<td><%=ing2.getIng_name()%></td>   	
 	    	<td>
-	    	<button type="button" onclick="return a();" >+</button>
+	    	<button type="button" onclick="javascript:plus('amount2'+'<%=i %>');">+</button>
 	    	<input type="text" name="amount2<%=i%>" value="<%=ing2.getAmount()%>" size="1">
-	    	<button type="button" onclick="return s();">-</button>
+	    	<button type="button" onclick="javascript:minus('amount2'+'<%=i %>');">-</button>
 	    	</td>
 	    	<td>
 	<%
@@ -176,36 +177,30 @@
 			<option value="마리" <%=f%>>마리</option>
 			</select>
 			</td>
+			<td align="center"><input type="checkbox" name="check2<%=i%>" value="true"></td>
 		</tr>
-		</table>
+
 	    <%}
-	}
-}%>
-    
-<input type="submit" value="수정하기" onclick="return updateCheck();"/>
-<input type="button" value="추가하기" onclick="window.open('recipeIngredientInsertForm.jsp?rec_id=<%=rec_id%>&random_id=<%=random_id %>','재료추가','width=600,height=600')" />
-<input type="submit" value="삭제하기" onclick="return removeCheck();"/>
-<input type="button" value="수정/추가 취소하기" onclick="window.location='recipeIngredientCanclePro.jsp?rec_id=<%=rec_id %>'" /> 
-<input type="button" value="돌아가기" onclick="window.close()"/><br/>
-<%
-if (count > 0) {
-	int pageCount = count / pageSize + ( count % pageSize == 0 ? 0 : 1);
-	int startPage = (int)(currentPage/10)*10+1;
-	int pageBlock = 10;
-	int endPage = startPage + pageBlock-1;
-	if (endPage > pageCount) {endPage = pageCount;}      
-	if (startPage > 10) {%>
-<a href="recipeIngredientUpdateForm.jsp?num=<%=rec_id%>&random_id=<%=random_id %>&pageNum=<%= startPage - 10 %>">[이전]</a>
- <%}
-for (int i = startPage ; i <= endPage ; i++) {  %>
- 	<a href="recipeIngredientUpdateForm.jsp?num=<%=rec_id%>&random_id=<%=random_id %>&pageNum=<%=i%>">[<%=i%>]</a>
- <%}
-if (endPage < pageCount) {  %>
-	<a href="recipeIngredientUpdateForm.jsp?num=<%=rec_id%>&random_id=<%=random_id %>&pageNum=<%= startPage + 10 %>">[다음]</a>
-<%}}%>
+	}%>
+	</table> 
+	<input type="submit" value="수정하기" onclick="return updateCheck();"/>
+	<input type="button" value="추가하기" onclick="window.open('recipeIngredientInsertForm.jsp?rec_id=<%=rec_id%>&random_id=<%=random_id %>','재료추가','width=600,height=600')" />
+	<input type="submit" value="삭제하기" onclick="return removeCheck();"/>
+	<input type="button" value="취소하기" onclick="window.location='recipeIngredientCanclePro.jsp?rec_id=<%=rec_id %>'" /> 	
+<%}%>
+
+
+
+<input type="button" value="완료하기" onclick="ingClose();"/><br/>
 
 </form>
 <script type=text/javascript>
+
+function ingClose(){
+	opener.document.getElementById("ings_name").innerHTML='<%=ings_name%>';
+	window.close();
+}
+
 function updateCheck() {
 	if (confirm("수정하시겠습니까?")){
 	}else{
@@ -215,11 +210,20 @@ function updateCheck() {
 
 function removeCheck() {
 	if (confirm("삭제하시겠습니까?")){
-		var rec_id = <%=rec_id%>;
+		var rec_id = '<%=rec_id%>';
 		f1.action='recipeIngredientDeletePro.jsp?rec_id='+rec_id;
 	}else{
 	return false;
 	}
 }
 
+function plus(amount){
+	var vari = document.f1.elements[amount].value;
+	document.f1.elements[amount].value = ++vari;
+}
+
+function minus(amount){
+	var vari = document.f1.elements[amount].value;
+	document.f1.elements[amount].value = --vari;
+}
 </script>

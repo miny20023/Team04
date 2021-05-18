@@ -45,21 +45,18 @@
 <form name="f2" action="recipeIngredientInsertPro.jsp?" method="post">
 <table> 
 	<tr> 
-		<td>추가</td>
-		<td>재료명</td> 
-	    <td>수량</td>
-	    <td>단위</td>
+		<td align="center">재료명</td> 
+	    <td align="center">수량</td>
+	    <td align="center">단위</td>
+	    <td align="center">선택</td>
     </tr>
-</table>    
 <%	
 	for (int i = 0 ; i < ingList.size() ; i++) {	// 제너릭을 안 쓰기 때문에 바꿔주는 작업	
 	CookDTO ing = (CookDTO)ingList.get(i); 
 %>
-<table>
 	<tr>
-		<td><input type="checkbox" name="check<%=i%>" value="true"></td>
     	<td><%=ing.getIng_name()%></td>
-    	<td><input type="text" name="amount<%=i%>"></td>
+    	<td align="center"><input type="text" name="amount<%=i%>"></td>
     	<td>
 		<select name="unit<%=i%>">
       		<option value="check">단위선택</option>
@@ -70,9 +67,10 @@
       		<option value="마리">마리</option>
       </select>		
       </td>
+      <td align="center"><input type="checkbox" name="check<%=i%>" value="true"></td>
 	</tr>
-</table>
 <%}%>
+</table>
 <input type="submit" value="추가하기"/>
 <input type="button" value="완료하기" onclick="sendClose()"/><br />
 <%

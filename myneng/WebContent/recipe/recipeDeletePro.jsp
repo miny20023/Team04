@@ -11,6 +11,7 @@
 	int num = Integer.parseInt(request.getParameter("num"));
 	String password = request.getParameter("password");
 	int status = Integer.parseInt(request.getParameter("status"));
+	String url = (String) session.getAttribute("url");
 	 
 	RecipeDAO dao = new RecipeDAO();
 	MemberDAO daom = new MemberDAO();
@@ -28,8 +29,8 @@
 	
 	if(result){ %>
 		<script>
-		alert("삭제되었습니다");
-		window.location="recipeListForm.jsp";
+		alert("처리되었습니다");
+		window.location='<%=url%>';
 		</script>
 <%	}else{%>
 		<script>

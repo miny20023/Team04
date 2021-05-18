@@ -98,7 +98,7 @@ public class CookDAO {
 				pstmt.executeUpdate();
 			}			
 			pstmt = conn.prepareStatement("update cook set rec_id=? where rec_id=?");
-			pstmt.setInt(1,rec_id);
+			pstmt.setInt(1, rec_id);
 			pstmt.setInt(2, random_id);
 			pstmt.executeUpdate();
 		}catch(Exception e) {
@@ -109,7 +109,7 @@ public class CookDAO {
 	}
 	
 	// 기존 재료 수정되었으면 true/ 아니면 false
-	// cook = 기존재료 / cook2 = 난수로 저장된 임시재료
+	// c1 = 기존재료 / c2 = 난수로 저장된 임시재료
 	public boolean isUpdate(int random_id, int rec_id) {
 		boolean result = false;
 		try {
@@ -297,6 +297,36 @@ public class CookDAO {
 			ConnectionDAO.close(rs, pstmt, conn);
 		}	
 		return ingList;
+	}
+	
+	// 기존재료 삭제시 rec_id를 임시로 난수+100000에 옮겨둠
+	public void changeRec_id(int random_id, int rec_id, CookDTO cook) {
+		try {
+			conn = ConnectionDAO.getConnection();
+			pstmt = conn.prepareStatement("update cook set rec_id=? where rec_id=? and ing_id=?");
+			pstmt.setInt(1,random_id);
+			pstmt.setInt(2, rec_id);
+			pstmt.setInt(3, cook.getIng_id());
+			pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			ConnectionDAO.close(rs, pstmt, conn);
+		}
+	}
+	
+	//재료 삭제
+	public void deleteIng(int random_id) {
+		try {
+			conn = ConnectionDAO.getConnection();
+			pstmt = conn.prepareStatement("delete from cook where rec_id=?");
+			pstmt.setInt(1, random_id);
+			pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			ConnectionDAO.close(rs, pstmt, conn);
+		}
 	}
 	
 }

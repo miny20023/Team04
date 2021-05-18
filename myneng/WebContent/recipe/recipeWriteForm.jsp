@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="cook.bean.CookDAO" %>
+<%@ page import="cook.bean.CookDTO" %>
+<%@ page import="java.util.List" %>
 <%@ include file = "../menu.jsp" %>
 <body bgcolor="#f0efea">
 <% 	
@@ -14,11 +17,17 @@
 		random_id = (int) session.getAttribute("random_id");
 	} 
 	System.out.println("recipeWriteForm의 random_id =" +random_id);
+	
+	List <CookDTO> ingList = null;
+	if(random_id != 0){
+		CookDAO daoc = new CookDAO();
+		ingList = daoc.getIng(random_id);
+	}
 %>
 
 <h1 align="center"> 레시피 등록하기 </h1>
 <center>
-<form action="recipeWritePro.jsp" method="post" enctype="multipart/form-data">
+<form name="recipe" action="recipeWritePro.jsp" method="post" enctype="multipart/form-data">
 <table border="1" cellpadding="0" cellspacing="0" align="center">
 <tr>
 	<td colspan="4" align="center">	
@@ -34,6 +43,7 @@
 <tr>
 	<td>재료</td>
 	<td colspan="3">
+		<label id="ings_name"></label>
 		<input type="button" value="재료입력" onclick="window.open('recipeIngredientUpdateForm.jsp?num=0&random_id=0','재료입력','width=600,height=600')" />
 	</td> 
 </tr>
@@ -50,7 +60,8 @@
 	</td>
 </tr>
 </table>
-		<input type="submit" value="등록완료" />	
+		<input type="submit" value="등록완료" />
+		<input type="button" value="등록취소" onclick="window.location='recipeCanclePro.jsp'"/>	
 </form>
 </center>
 </body>

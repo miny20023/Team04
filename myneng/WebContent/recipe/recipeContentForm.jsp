@@ -22,7 +22,9 @@ if(session.getAttribute("memId") != null){
 	System.out.println("recipeContentForm의 comment_listNum =" +comment_listNum);
 	
 	String pageNum = request.getParameter("pageNum");
-		
+	String url = (String) session.getAttribute("url");
+	System.out.println("url = "+url);
+	
 	RecipeDAO dao = new RecipeDAO();
 	CookDAO daoc = new CookDAO();
 	
@@ -32,7 +34,6 @@ if(session.getAttribute("memId") != null){
 	
 	// 레시피번호 -> cook 테이블에서 재료 번호 찾음 -> 재료 테이블에서 재료 호출 -> 재료 반환
 	List <CookDTO> ingList = daoc.getIng(num); 
-	boolean scrap = dao.isScrap(id, num);
 %>
 <center>
 <table border="1" cellpadding="0" cellspacing="0" align="center">
@@ -42,7 +43,7 @@ if(session.getAttribute("memId") != null){
 		if(recipe.getImage() == null){%>
 			사진이 등록되지 않았습니다. <br />
 	<% 	} else{%>
-			<img src="/maneng/recipeSave/<%=recipe.getImage() %>" /> <br />
+			<img src="/myneng/recipeSave/<%=recipe.getImage() %>" /> <br />
 	<%	} %>
 	</td>
 </tr>	
@@ -69,43 +70,50 @@ if(session.getAttribute("memId") != null){
 	<td align="center"><%=recipe.getDifficulty() %></td>
 </tr>
 <tr>
-	<td colspan="4" align="center"><%=recipe.getProcess() %></td>
+	<td colspan="4"><%=recipe.getProcess().replaceAll("\n", "<br />") %></td>
 </tr>
 </table>
-<%	if(id.equals(recipe.getWriter())){%>
+<%	if(id.equals(recipe.getWriter()) && recipe.getStatus() != 0){%>
 		<input type="button" value="수  정" onclick="window.location='recipeUpdateForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0'"/>
-		<input type="button" value="삭  제" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>'"/>
-	<%} else{%>
-	<input type="button" value="추  천" onclick="window.location='recipeReccPro.jsp?num=<%=num%>'"/>
-<%		} %>
-<%if(memberMaster == 2){ %>
-	<input type="button" value="삭  제" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>'"/>
-<%	if(recipe.getStatus() == 1){%>
-		<input type="button" value="승  인" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=2'" />
-<% 	} else if(recipe.getStatus() == 2){%>
-		<input type="button" value="승인취소" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=1'" />
-<%	} %>	
-<%} else if (memberMaster == 0 && recipe.getStatus() == 2){
-		if(!scrap){%>
+	<%} else{
+		if(recipe.getStatus() != 0){%>
+			<input type="button" value="추  천" onclick="window.location='recipeReccPro.jsp?num=<%=num%>'"/>
+<%		}
+	} %>
+<%	if((id.equals(recipe.getWriter()) || memberMaster == 2) && recipe.getStatus() != 0){ %>
+		<input type="button" value="삭  제" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=0'"/>
+<% }%>
+<%	if(memberMaster == 2){ 
+		if(recipe.getStatus() == 0){%>
+			<input type="button" value="삭제취소" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=1'"/>
+<%		}%>
+<%		if(recipe.getStatus() == 1){%>
+			<input type="button" value="승  인" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=2'" />
+<% 		} else if(recipe.getStatus() == 2){%>
+			<input type="button" value="승인취소" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=1'" />
+<%		} %>	
+<%	} else if (memberMaster == 0 && recipe.getStatus() == 2){
+		if(!dao.isScrap(id, num)){%>
 			<input type="button" value="  찜  " onclick="window.location='recipeScrapPro.jsp?pageNum=<%=pageNum%>&num=<%=num%>'" />
 		<%}else{ %>
 			<input type="button" value="찜해제" onclick="window.location='recipeScrapPro.jsp?pageNum=<%=pageNum%>&num=<%=num%>'" />
 <%		}
 	} %>
 
-<input type="button" value="목  록" onclick="window.location='recipeListForm.jsp?PageNum=<%=pageNum %>'" />
+<input type="button" value="목  록" onclick="window.location='<%=url %>'" />
 
-<jsp:include page="recipeCommentList.jsp" >
-	<jsp:param name="num" value="<%=num %>" />
-	<jsp:param name="comment_listNum" value="<%=comment_listNum %>" />
-</jsp:include>
-
-<jsp:include page = "recipeCommentWriteForm.jsp">
-	<jsp:param name="num" value="<%=num %>" />
-	<jsp:param name="pageNum" value="<%=pageNum %>" />
-	<jsp:param name="comment_listNum" value="<%=comment_listNum %>" />
-</jsp:include>
-
+<%	if(recipe.getStatus() == 2){ %>
+	<jsp:include page="recipeCommentList.jsp" >
+		<jsp:param name="num" value="<%=num %>" />
+		<jsp:param name="comment_listNum" value="<%=comment_listNum %>" />
+	</jsp:include>
+	
+	<jsp:include page = "recipeCommentWriteForm.jsp">
+		<jsp:param name="num" value="<%=num %>" />
+		<jsp:param name="pageNum" value="<%=pageNum %>" />
+		<jsp:param name="comment_listNum" value="<%=comment_listNum %>" />
+	</jsp:include>
+<%	} %>
 </center>
 <%}else{ %>
 	<script>
@@ -113,6 +121,13 @@ if(session.getAttribute("memId") != null){
 		history.go(-1);
 	</script>
 <%} %>
+
+<script>
+	function historyBack(){
+		location.reload();
+		history.go(-1);
+	}
+</script>
 </body>
 
 

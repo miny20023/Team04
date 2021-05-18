@@ -9,6 +9,15 @@
 <jsp:setProperty name="article" property="*"/>
 
 <%
+	if(String.valueOf(article.getComment_text()).equals("null"))
+	{%>
+		<script>
+		alert("내용을 입력해주세요");
+		window.history.back();
+		</script>
+	<%}
+	else
+	{
 	String id = (String)session.getAttribute("memId");
 	int num = Integer.parseInt(request.getParameter("num"));
 	int pageNum = Integer.parseInt(request.getParameter("pageNum"));
@@ -29,4 +38,5 @@
    	}
 
     response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_pageNum="+return_comment_pageNum+"&comment_listNum=0");
+	}
 %>

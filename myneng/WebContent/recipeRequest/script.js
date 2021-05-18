@@ -23,7 +23,7 @@ function writeSave(){
 	  return false;
 	}
 	
-	if(document.getElementById("comment_text").value=="")
+	if(document.getByName("comment_text")=="")
 	{
 	  alert("내용을 입력하십시요.");
 	  document.comment_content.comment_text.focus();

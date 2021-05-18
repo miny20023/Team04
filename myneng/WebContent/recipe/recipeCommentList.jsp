@@ -54,22 +54,29 @@
 			
 	%>		
 			<tr height="50">
-				<td width="400">
-					<%=level_space%><%=recipeComment.getComment_id() %></br>
+
+				<%if(recipeComment.getComment_text().equals("삭제된 댓글입니다.")){ %>
+					<td colspan="3" width="400">
 					<%=level_space%><%=recipeComment.getComment_text() %></br>
+					</td>			
+				<%}else{%>
+					<td width="400">
+					<%=level_space%><%=recipeComment.getComment_id() %></br>
+					<%=level_space%><%=recipeComment.getComment_text().replaceAll("\n", "<br />") %></br>
 					<%=level_space%><%=sdf.format(recipeComment.getReg_date()) %>
-				</td>
-				<td align="center" width="50">
+					</td>
+					<td align="center" width="50">
 					<%if(comment_listNum != listNum || comment_listNum == 0) { 	//대댓글 작성 창 열림%>
-					<a href="recipeContentForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=<%=listNum %>">댓글달기</a>
+						<a href="recipeContentForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=<%=listNum %>">댓글달기</a>
 				<%	} else {													//대댓글 작성창 열린 상태에서 클릭 -> 대댓글 작성창 닫힘%>
-					<a href="recipeContentForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=0">댓글달기</a>
-				<%	} %>
-				</td>
-				<td align="center" width="50">
+						<a href="recipeContentForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=0">댓글달기</a>
+					</td>
+				<%	}%>
+					<td align="center" width="50">
 					<a href="recipeCommentDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_num=<%=comment_num %>" 
-					onclick="window.open(this.href,'댓글삭제','width=200,height=300');return false;">댓글삭제</a>
-				</td>
+					onclick="window.open(this.href,'댓글삭제','width=350,height=100');return false;">댓글삭제</a>
+					</td>
+			<%	}	%>
 			</tr>
 		<%	if(comment_listNum == listNum){ 
 				//int comment_num = recipeComment.getComment_num();

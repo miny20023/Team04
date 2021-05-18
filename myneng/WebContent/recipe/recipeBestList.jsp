@@ -10,6 +10,17 @@
 	int pageSize = 10; 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
+	if(session.getAttribute("url") != null){
+		session.removeAttribute("url");
+	}
+	if(session.getAttribute("url") == null ){
+		String url = request.getRequestURL().toString();
+		if(request.getQueryString() != null){
+			url = url + "?" + request.getQueryString();
+		}
+		session.setAttribute("url", url);
+	}
+	
 	String pageNum = request.getParameter("pageNum");
 	if(pageNum == null){
 		pageNum = "1";
@@ -46,7 +57,7 @@
 	    		<%if(recipe.getReccommend() >= 5){%> ★</font> <%} 			// 인기글(추천수 5이상)%><a>
 	   	</td>
 	   	<td align="center" width="100"><%=recipe.getWriter() %></td>
-	   	<td align="center" width="100"><%=recipe.getDay() %></td>
+	   	<td align="center" width="100"><%=sdf.format(recipe.getDay()) %></td>
 	   	<td align="center" width="50"><%=recipe.getReadcount() %></td>
 	   	<td align="center" width="50"><%=recipe.getReccommend() %></td>
 <%		number--;

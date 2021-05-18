@@ -5,7 +5,7 @@ Bundle-SymbolicName: myneng
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-15
 Automatic-Module-Name: myneng
-Export-Package: cartBoard,
- cartBoardComment,
- dbConnectionDAO,
+Export-Package: dbConnectionDAO,
+ groupBuying.board,
+ groupBuying.comment,
  member.bean

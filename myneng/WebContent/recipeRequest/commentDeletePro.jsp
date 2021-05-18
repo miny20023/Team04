@@ -13,7 +13,7 @@
 	int comment_pageNum = Integer.parseInt(request.getParameter("comment_pageNum"));
 	
 	CommentDBBean dbPro = new CommentDBBean();
-	int check = dbPro.deleteArticle_comment(num,listNum, id,pageNum);
+	int check = dbPro.deleteArticle_comment(num,listNum, id,comment_pageNum);
 	
 	if(check==1 || check == 2)
 	{
