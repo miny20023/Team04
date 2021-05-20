@@ -11,21 +11,15 @@
 	// 인코딩
 	request.setCharacterEncoding("UTF-8");
 	
-	// memId 호출
-	String memId = (String)session.getAttribute("memId");
-	if (memId == null || memId.trim().isEmpty()) {%>
-		<script>
-			alert("아이디의 세션이 종료 되어서 aaa 계정으로 로그인합니다.");
-		</script>
-		<%memId = "aaa";
-    }
+	//memId 호출
+	String memId = (String)session.getAttribute("memId");		// 리펙으로 ingList 호출한 부분으로 합침
 	
 	// 임의 페이지 수 게시글 수 정의
 	int pageSize = 10;
 	
 	// 페이지 유효성 검사
 	String pageNum = request.getParameter("pageNum");
-	if (pageNum == null || pageNum.trim().isEmpty()) {
+	if (pageNum == null || pageNum == "") {
         pageNum = "1";
     }
 	
@@ -36,22 +30,29 @@
     int number = 0;										// 재료 순번
     
  	// 재료 list 가져오기
-    List ingList = null;
+    List<MaNengDataBean> ingList = null;
 	MaNengDBBean mnDB = new MaNengDBBean();
-	count = mnDB.getRefCount(memId+"_refrigerator");	// 냉장고 재료 수
-    if(count>0){										
-  		ingList = mnDB.getRefs(memId+"_refrigerator", startRow, endRow);
-    }																	
-    
+	if (memId == null || memId == "") {%>
+		<script>
+			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
+			window.location="<%=request.getContextPath()%>/menu.jsp"
+		</script>
+	<%																		
+	}else{
+		count = mnDB.getRefCount(memId+"_refrigerator");	// 냉장고 재료 수
+	    if(count>0){										
+	  		ingList = mnDB.getRefs(memId+"_refrigerator", startRow, endRow);
+	    }
+	}
+	
 	// list session 선언
     session.setAttribute("ingList", ingList);
     
     // tempIngList 설정
-    List tempIngList = null;
-  	tempIngList = (List) session.getAttribute("tempIngList");
+    List<MaNengDataBean> tempIngList = (List) session.getAttribute("tempIngList");
   	session.setAttribute("tempIngList", tempIngList);
   	
- // test(전 페이지 값) 호출
+	// test(전 페이지 값) 호출
     String test = request.getParameter("test");
 	int testNum = 0;
     if(test!=null){
@@ -104,7 +105,7 @@
 					}
 				}else{
 					MaNengDataBean ing = new MaNengDataBean();
-					tempIngList = mnDB.getIngs(getName);
+					tempIngList = mnDB.getIng(getName);
 					ing = (MaNengDataBean)tempIngList.get(0);
 					ing.setCheck("true");
 					ing.setAmount(getAmount);
@@ -118,19 +119,24 @@
     
     number=count-(currentPage-1)*pageSize;
 %>
+<input type = "hidden" id = "testNum" value = "<%=testNum%>">
 <div class="center">
 <form name="f2" action="mixRecipeSearch.jsp" method="post">
 <input type="hidden" id="search" name="search">
 <input type="text" id="keyword" /><input type="submit" value="검색" onclick="javascript:goSearch()"><br/>
 <table> 
 	<tr> 
-		<td>추가</td><td>재료명</td><td>수량</td><td>단위</td><td>유통기한</td>        
+		<td class = "name">재료명</td> 
+	    <td class = "amount">수량</td>
+	    <td class = "unit">단위</td>
+	    <td class = "freshness">유통기한</td>
+	    <td class = "check">추가</td>             
     </tr>
 </table>
 <%if (count == 0) {%>
 <table>
 	<tr>
-   		<td colspan="5">
+   		<td rowspan ="5" colspan = "5">
    			냉장고에 저장된 재료가 없습니다.
    		</td>
    	</tr>
@@ -141,28 +147,28 @@
 %>	
 <table> 
 	<tr>
-		<td>
-		<input type="checkbox" id="ch<%=ing.getIng_id()%>" value="true" onclick="return check(<%=ing.getIng_id()%>);"/>
-		</td>
-    	<td>
+    	<td class = "name">
     	<%=ing.getIngname()%>
     	<input type="hidden" id="hiddenName<%=ing.getIng_id()%>" value="<%=ing.getIngname()%>">
     	</td>   	
-    	<td>
+    	<td class = "amount">
     	<%=ing.getAmount()%>
     	<input type="hidden" id="hiddenAmount<%=ing.getIng_id()%>" value="<%=ing.getAmount()%>"></td>
-    	<td>
+    	<td class = "unit">
     	<%=ing.getUnit()%>
     	<input type="hidden" id="hiddenUnit<%=ing.getIng_id()%>" value="<%=ing.getUnit()%>">
     	</td>
-    	<td>
+    	<td class = "freshness">
     	<%=ing.getFreshness()%>
     	<input type="hidden" id = "hiddenFreshness<%=ing.getIng_id()%>" value="<%=ing.getFreshness()%>">
     	</td>
+    	<td class = "check">
+		<input type="checkbox" id="ch<%=ing.getIng_id()%>" value="true" onclick="return check(<%=ing.getIng_id()%>);"/>
+		</td>
 	</tr>
 <%}}%>
 </table>
-<button type="button" onclick="javascript:mixCheck();">조합하기</button></br>
+<button type="button" onclick="javascript:mixCheck();">조합하기</button><br/>
 <%
 	// 페이지 이동
 		if (count > 0) {
@@ -175,7 +181,7 @@
 		<a href="javascript:page(<%= startPage - 10 %>);">[이전]</a>
 		 <%}
 		for (int i = startPage ; i <= endPage ; i++) {  %>
-			<a href="javascript:page(<%=i%>)";>[<%=i%>]</a>
+			<a href="javascript:page(<%=i%>);">[<%=i%>]</a>
 		<%}
 		if (endPage < pageCount) {  %>
 		<a href="javascript:page(<%= startPage + 10 %>)">[다음]</a>
@@ -187,9 +193,10 @@
 </body>
 <script type="text/javascript">
 var checkedVar = new Array();
+var testNum = document.getElementById("testNum").value;
 
 if(document.getElementById("setId0")!=null){
-	for(let i = 0; i < <%=testNum%>; i++) {
+	for(let i = 0; i < testNum; i++) {
 		var array = new Array();
 		var id = document.getElementById("setId"+i).value;
 		array.push(id);

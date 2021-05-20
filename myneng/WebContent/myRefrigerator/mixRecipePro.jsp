@@ -15,10 +15,10 @@
 	
 	//memId 가져오기
 	String memId = (String)session.getAttribute("memId");
-	if (memId == null || memId.trim().isEmpty()) {%>
+	if (memId == null || memId == "") {%>
 		<script>
 			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
-			window.location="/myneng/menu.jsp"
+			window.location="<%=request.getContextPath()%>/menu.jsp"
 		</script>
 		<%
 	}
@@ -27,10 +27,10 @@
 	MaNengDBBean mnDB = new MaNengDBBean();
 	
 	// ingList 호출
-	List ingList = (List) session.getAttribute("ingList");
+	List<MaNengDataBean> ingList = (List) session.getAttribute("ingList");
 		
 	// tempIngList 호출
-	List tempIngList = (List) session.getAttribute("tempIngList");
+	List<MaNengDataBean> tempIngList = (List) session.getAttribute("tempIngList");
 
 	// test(전 페이지 값) 호출
 	String test = request.getParameter("test");
@@ -82,7 +82,7 @@
 					}
 					}else{
 						MaNengDataBean ing = new MaNengDataBean();
-						tempIngList = mnDB.getIngs(getName);
+						tempIngList = mnDB.getIng(getName);
 						ing = (MaNengDataBean)tempIngList.get(0);
 						ing.setCheck("true");
 						ing.setAmount(getAmount);
@@ -97,8 +97,7 @@
 	try{
 		if(ingList!=null){
 			List<Integer> recList = mnDB.mixRecipe(tempIngList);		// 체크 된 재료로만 레시피 추천
-			if(recList.isEmpty()){										// 레시피 여부 확인
-			}else{
+			if(!recList.isEmpty()){										// 레시피 여부 확인
 				session.setAttribute("recList", recList);
 				alert = "레시피를 조회하였습니다!";
 				sendCheck = true;

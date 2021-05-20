@@ -2,6 +2,18 @@
 
 .center { 
 	margin: 0 auto;
-	display: flex;
   	justify-content: center;
+  	max-width:700px;
 } 
+table {
+	margin: 0 auto;
+	display: flex;
+  	justify-content: left;
+  	text-align: center;
+}
+.check{width:50px;}
+.name{width:150px;}
+.amount{width:150px;}
+.unit{width:50px;}
+.freshness{width:300px;}
+.button{}

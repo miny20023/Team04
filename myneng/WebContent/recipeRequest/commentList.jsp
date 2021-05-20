@@ -80,7 +80,7 @@
     	 	<%}
     	 	else
     	 	{%>
-    	 		<a href="content.jsp?num=<%=num%>&pageNum=<%=pageNum%>&comment_listNum=0">
+    	 		<a href="content.jsp?num=<%=num%>&pageNum=<%=pageNum%>&comment_pageNum=<%=comment_pageNum %>&comment_listNum=0">
         	 	댓글달기</a>
     	 	<%} %>
     	 	
@@ -110,6 +110,7 @@
 				<input type="hidden" name="num" value="<%=num %>">
 				<input type="hidden" name="comment_listNum" value=<%=listNum %>>
 				<input type="hidden" name="pageNum" value=<%=pageNum %>>
+				<input type="hidden" name="comment_pageNum" value=<%=comment_pageNum %>>
 				<textarea cols = "70" rows "10" name="comment_text"></textarea>
 				<input type="submit" value="댓글 등록"></br>
 				</form></td>

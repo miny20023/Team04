@@ -15,19 +15,24 @@
 	
 	if(cookies != null){
 		for(Cookie coo_id : cookies){
-			id = coo_id.getName();//쿠키이름꺼내기
-			// 쿠키이름이 cooId와 같은가 ->id에 저장
-			if(id.equals("cooId")){
-				id = coo_id.getValue();	
-				remid="checked='checked'";
-				 break;		
+			
+			if(!(coo_id.getName().equals("JSESSIONID"))){
+				id = coo_id.getName();//쿠키이름꺼내기
+				// 쿠키이름이 cooId와 같은가 ->id에 저장
+				if(id.equals("cooId")){
+					id = coo_id.getValue();	
+					remid="checked='checked'";
+					 break;
+				}
 			}
 		}for(Cookie coo_pw : cookies){
-			pw = coo_pw.getName();
-			if(pw.equals("cooPw")){
-				pw = coo_pw.getValue();
-				rempw="checked='checked'";
-				 break;
+			if(!(coo_pw.getName().equals("JSESSIONID"))&&!(coo_pw.getName().equals("cooId"))){
+				pw = coo_pw.getName();
+				if(pw.equals("cooPw")){
+					pw = coo_pw.getValue();
+					rempw="checked='checked'";
+					 break;
+				}
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 package test.model.food;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,11 +10,11 @@ import java.util.List;
 import test.model.food.MaNengDataBean;
 import test.model.food.ConnectionDAO;
 
-public class MaNengDBBean implements Serializable {
+public class MaNengDBBean {
 	private Connection conn = null;
 	private PreparedStatement ps = null;
 	private ResultSet rs = null;
-
+	
 	public int dateCompare(String freshness) {
 		SimpleDateFormat format = new SimpleDateFormat("yy-MM-dd");
 		Date t = new Date();
@@ -32,8 +31,8 @@ public class MaNengDBBean implements Serializable {
 		return compare;
 	}
 	
-	public List getIngs () throws Exception {
-		List totalList = new ArrayList();
+	public List<MaNengDataBean> getIngs () throws Exception {
+		List<MaNengDataBean> totalList = new ArrayList<MaNengDataBean>();
 		try {
 			conn = ConnectionDAO.getConn();
 			String sql = "select * from ingredient";
@@ -55,8 +54,8 @@ public class MaNengDBBean implements Serializable {
 		return totalList;
 	}
 	
-	public List <MaNengDataBean> getIngs(int num) {
-		List ingList = new ArrayList <MaNengDataBean> ();
+	public List<MaNengDataBean> getIngs(int num) {
+		List<MaNengDataBean> ingList = new ArrayList<MaNengDataBean> ();
 		try {
 			conn = ConnectionDAO.getConn();
 			String sql = "select i.name, c.amount, c.unit from ingredient i, cook c where c.ing_id=i.id and c.rec_id=?";
@@ -79,8 +78,8 @@ public class MaNengDBBean implements Serializable {
 	}
 	
 	// startRow부터 endRow까지의 재료 가져오기
-	public List getIngs (int startRow, int endRow) throws Exception {
-		List ingList = null;
+	public List<MaNengDataBean> getIngs (int startRow, int endRow) throws Exception {
+		List<MaNengDataBean> ingList = null;
 		try {
 			conn = ConnectionDAO.getConn();
 			String sql = "select * from (select id,name,rownum r from (select * from ingredient)) where r >= ? and r <= ?";
@@ -89,7 +88,7 @@ public class MaNengDBBean implements Serializable {
 			ps.setInt(2, endRow);			
 			rs = ps.executeQuery();
 					if (rs.next()) {
-						ingList = new ArrayList(); 
+						ingList = new ArrayList<MaNengDataBean>(); 
 						do{
 							MaNengDataBean ing = new MaNengDataBean();
 							ing.setIngname(rs.getString("name"));
@@ -106,8 +105,8 @@ public class MaNengDBBean implements Serializable {
 	}
 	
 	// search가 포함 된 startRow부터 endRow까지의 재료 가져오기
-	public List getIngs (String search, int startRow, int endRow) throws Exception {
-		List ingList = null;
+	public List<MaNengDataBean> getIngs (String search, int startRow, int endRow) throws Exception {
+		List<MaNengDataBean> ingList = null;
 		String sql ="";
 		try {
 			conn = ConnectionDAO.getConn();
@@ -118,7 +117,7 @@ public class MaNengDBBean implements Serializable {
 			ps.setInt(2, endRow);			
 			rs = ps.executeQuery();
 					if (rs.next()) {
-						ingList = new ArrayList(); 
+						ingList = new ArrayList<MaNengDataBean>(); 
 						do{
 							MaNengDataBean ing = new MaNengDataBean();
 							ing.setIngname(rs.getString("name"));
@@ -135,34 +134,37 @@ public class MaNengDBBean implements Serializable {
 	}
 	
 	// tempIngList 재료 가져오기
-		public MaNengDataBean getIng (String getName) throws Exception {
-			MaNengDataBean ing = new MaNengDataBean();
-			try {
-				conn = ConnectionDAO.getConn();
-				String sql = "select * from ingredient where name ="+getName;
-				ps = conn.prepareStatement(sql); 
-				rs = ps.executeQuery();
-				if (rs.next()) { 
-					ing.setIngname(rs.getString("name"));
-					ing.setIng_id(rs.getInt("id"));
-				}
-			} catch(Exception ex) {
-				ex.printStackTrace();
-			} finally {
-				ConnectionDAO.close(rs, ps, conn);
-			}	
-			return ing;
-		}
+	public List<MaNengDataBean> getIng (String getName) throws Exception {
+		List<MaNengDataBean> ingList = null;
+		try {
+			conn = ConnectionDAO.getConn();
+			String sql = "select * from ingredient where name = '"+getName+"'";
+			ps = conn.prepareStatement(sql); 
+			rs = ps.executeQuery();
+			if (rs.next()) { 
+			ingList = new ArrayList<MaNengDataBean>(); 
+				MaNengDataBean ing = new MaNengDataBean();
+				ing.setIngname(rs.getString("name"));
+				ing.setIng_id(rs.getInt("id"));
+				ingList.add(ing);
+			}
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			ConnectionDAO.close(rs, ps, conn);
+		}	
+		return ingList;
+	}
 	
 	// search가 포함 된 재료 가져오기
-	public List getIngs (String search) throws Exception {
-		List ingList = null;
+	public List<MaNengDataBean> getIngs(String search) throws Exception {
+		List<MaNengDataBean> ingList = null;
 		try {
 			conn = ConnectionDAO.getConn();
 			ps = conn.prepareStatement("select * from ingredient where name like '%"+search+"%'" ); 
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				ingList = new ArrayList(); 
+				ingList = new ArrayList<MaNengDataBean>(); 
 				do{
 					MaNengDataBean ing = new MaNengDataBean();
 					ing.setIngname(rs.getString("name"));
@@ -256,8 +258,8 @@ public class MaNengDBBean implements Serializable {
 	}
 	
 	// mem_id 아이디의 냉장고에서 startRow부터 endRow까지의 기입 된 재료 수
-	public List getRefs(String mem_id, int startRow, int endRow) throws Exception {
-		List ingList = new ArrayList();
+	public List<MaNengDataBean> getRefs(String mem_id, int startRow, int endRow) throws Exception {
+		List<MaNengDataBean> ingList = new ArrayList();
 		String sql ="";
 		try {
 			conn = ConnectionDAO.getConn();
@@ -287,8 +289,8 @@ public class MaNengDBBean implements Serializable {
 	}
 	
 	// mem_id 아이디의 냉장고에서 search가 포함 된 startRow부터 endRow까지의 기입 된 재료 수
-		public List getRefs(String mem_id, String search ,int startRow, int endRow) throws Exception {
-			List ingList = new ArrayList();
+		public List<MaNengDataBean> getRefs(String mem_id, String search ,int startRow, int endRow) throws Exception {
+			List<MaNengDataBean> ingList = new ArrayList();
 			String sql ="";
 			try {
 				conn = ConnectionDAO.getConn();
@@ -438,15 +440,15 @@ public class MaNengDBBean implements Serializable {
 	
 	// 체크 된 재료로만 레시피 추천
 	public List<Integer> mixRecipe(List<MaNengDataBean> tempIngList) throws Exception { 
-		List recList = new ArrayList();
+		List<Integer> recList = new ArrayList();
 		List<Integer> ing_idList = new ArrayList();									// 재료ID list 생성
 		for(int i = 0; i < tempIngList.size() ; i++) {
 			MaNengDataBean checkedIng_id = (MaNengDataBean)tempIngList.get(i);
 			ing_idList.add(checkedIng_id.getIng_id());
 		}
 		String sql="";
-		int count = 0;
 		boolean check = true;
+		int count = 0;
 		try {
 			conn = ConnectionDAO.getConn();
 			sql = "select count(*) AS rowcount from (select distinct rec_id from cook)";
@@ -456,14 +458,16 @@ public class MaNengDBBean implements Serializable {
 				count = rs.getInt("rowcount");	// rs.getInt(1)로 되지 않고, count = rs.getBigDecimal(1).intValue()도 안된다.
 			}									// AS rowcount로 칼럼을 지정해 직접 레시피 가지 수 호출			
 			for(int i = 1 ; i <= count ; i++) {		
-				sql = "select distinct ing_id, amount from cook where rec_id = " + i;
+				sql = "select ing_id,rec_id,amount,unit from cook where rec_id =";
+				sql += "(select rec_id from (select rec_id,rownum r from(select distinct rec_id from cook)) where r ="+i+")";
 				ps = conn.prepareStatement(sql);
 				rs = ps.executeQuery();
-				while(rs.next()) {	
+				while(rs.next()) {
+					check = true;
 					if(ing_idList.contains(rs.getInt("ing_id")) ){	// 재료ID 'i'번 리스트의 재료 있는지 확인
 						for(int j = 0 ; j < tempIngList.size() ; j++) {
 						MaNengDataBean list = tempIngList.get(j);						
-							if(list.getIng_id()==rs.getInt("ing_id")) {	// 레시피 ing와 맞는 ing 냉장고에서 호출
+							if(list.getIng_id()==rs.getInt("ing_id")&&list.getUnit()==rs.getString("amount")) {	// 레시피 ing와 맞는 ing 냉장고에서 호출
 								double ing = convertFractionToDecimal(list.getAmount());
 								double cook = convertFractionToDecimal(rs.getString("amount"));
 								if(ing < cook) {			// 레시피와 냉장고 amount 비교
@@ -473,11 +477,13 @@ public class MaNengDBBean implements Serializable {
 						}
 					}else {
 						check = false;
-					}	
+					}
+					if(check) {
+						if(!recList.contains(rs.getInt("rec_id"))){
+							recList.add(rs.getInt("rec_id"));		// 추천 된 레시피를 리스트에 추가
+						}
+					}
 				}	
-				if(check) {
-					recList.add(i);		// 추천 된 레시피를 리스트에 추가
-				}
 			}
 		} catch(Exception ex) {
 			ex.printStackTrace();
@@ -560,14 +566,12 @@ public class MaNengDBBean implements Serializable {
 	public String addFraction(String newAmount, String refAmount) {
 			double temp = convertFractionToDecimal(newAmount) + convertFractionToDecimal(refAmount);
 			String addAmount = convertDecimalToFraction(temp);
-			System.out.println(addAmount);
 		return addAmount;
 	}
 	
 	public String subtractFraction(String newAmount, String refAmount) {
 		double temp = convertFractionToDecimal(newAmount) - convertFractionToDecimal(refAmount);
 		String subtractAmount = convertDecimalToFraction(temp);
-		System.out.println(subtractAmount);
 	return subtractAmount;
 }
 }

@@ -51,7 +51,7 @@
 					<%if(id != null) 
 					{%>
 						<a href="writeForm.jsp">글쓰기</a>
-						<a href="myList.jsp">나의 작성글 목록</a>
+						<a href="shoppingInfoShare.jsp">전체 목록</a>
 					<%}
 					else
 					{%>

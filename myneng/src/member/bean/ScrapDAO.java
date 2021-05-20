@@ -3,6 +3,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
+
+import recipe.bean.ConnectionDAO;
+
 import java.util.ArrayList;
 
 public class ScrapDAO {
@@ -10,7 +13,7 @@ public class ScrapDAO {
 	private PreparedStatement pstmt = null;
 	private ResultSet rs = null;
 	
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û¹ï¿½È£(rec_id)ï¿½ï¿½È¯
+	// 
 	public int insertRecipe(ScrapDTO recipe) {
 		int num = 0;
 		try {
@@ -39,7 +42,7 @@ public class ScrapDAO {
 		return num;
 	}
 	
-	// ï¿½ï¿½ï¿½ï¿½ idï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¸ 
+	// 
 	public int getMemberMaster(String id) {
 		int master = 10;
 		try {
@@ -58,7 +61,7 @@ public class ScrapDAO {
 		return master;
 	}
 	
-	// ï¿½ï¿½Ã¼ ï¿½Û¼ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
+	// 
 	public int getRecipeCount() {
 		int x = 0;
 		try {
@@ -77,7 +80,7 @@ public class ScrapDAO {
 		return x;
 	}
 	
-	// ï¿½Ô½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+	// 
 	public List <ScrapDTO> getRecipes(int start, int end) {
 		List <ScrapDTO> recipeList = null;
 			try {
@@ -113,7 +116,7 @@ public class ScrapDAO {
 		return recipeList;
 	}
 	
-	//ï¿½Ô½Ã±ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½Ô½Ã±ï¿½ ï¿½ï¿½È¸ï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½
+	//
 	public void readCount(int num) {
 		try {
 			conn = ConnectionDAO.getConnection();
@@ -127,7 +130,7 @@ public class ScrapDAO {
 		}
 	}
 	
-	// ï¿½Ô½Ã±ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Ø´ï¿½ ï¿½Ô½Ã±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+	//
 	public ScrapDTO getRecipes(int num) {
 			ScrapDTO recipe = null;
 			try {
@@ -157,7 +160,7 @@ public class ScrapDAO {
 		return recipe;
 	}
 	
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½(ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
+	//
 	public void updateRecipe(ScrapDTO recipe) {
 		try {
 			conn = ConnectionDAO.getConnection();
@@ -177,7 +180,7 @@ public class ScrapDAO {
 		}
 	}
 	
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½Ç¾ï¿½ï¿½ï¿½ï¿½ï¿½
+	// 
 	public void updateImage(ScrapDTO recipe) {
 		try {
 			conn = ConnectionDAO.getConnection();
@@ -192,7 +195,7 @@ public class ScrapDAO {
 		}
 	}
 	
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ - status 0ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	//
 	public boolean changeRecipeStatus(int num, int status) {
 		 boolean result = false;
 		 try {
@@ -216,7 +219,7 @@ public class ScrapDAO {
 		 return result;
 	}
 	
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ãµï¿½ï¿½ reccommend + 1
+	//·¹½ÃÇÇ ÃßÃµ½Ã recommend+1
 	public void reccRecipe(int num) {
 		try {
 			conn = ConnectionDAO.getConnection();
@@ -230,15 +233,15 @@ public class ScrapDAO {
 		}
 	}
 	
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ id_scrapï¿½ï¿½ï¿½Ìºï¿½ ï¿½ß°ï¿½
+	// ÂòÇÑ ·¹½ÃÇÇ id_scrapÅ×ÀÌºí¿¡ Ãß°¡
 	public void setScrap(String id, int num) {
 		try {
 			int scrap_id = 1;
 			conn = ConnectionDAO.getConnection();
-			pstmt = conn.prepareStatement("select rec_id from "+id+"_scrap where rec_id=?"); // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½
+			pstmt = conn.prepareStatement("select rec_id from "+id+"_scrap where rec_id=?"); // 
 			pstmt.setInt(1, num);
 			rs = pstmt.executeQuery();
-			if(!rs.next()) { // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
+			if(!rs.next()) { //  
 				pstmt = conn.prepareStatement("select id from "+id+"_scrap order by id desc");
 				rs = pstmt.executeQuery();
 				if(rs.next()) {
@@ -257,7 +260,7 @@ public class ScrapDAO {
 		}
 	}
 
-	// ï¿½Ã·ï¿½ï¿½ï¿½ ï¿½Ë»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+	// 
 	public List <ScrapDTO> getRecipes(String col, String search, int start, int end) {
 		List <ScrapDTO> recipeList = null;
 			try {
@@ -294,7 +297,7 @@ public class ScrapDAO {
 		return recipeList;
 	}
 	
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È¯
+	// 
 		public int getScrapCount(String id) {
 			int x = 0;
 			try {
@@ -313,7 +316,7 @@ public class ScrapDAO {
 			return x;
 		}
 	
-	// ï¿½Ô½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È¯
+	// 
 			public List <ScrapDTO> getScrapList(int start, int end, String id) {
 				List <ScrapDTO> recipeList = null;
 					try {
@@ -349,7 +352,7 @@ public class ScrapDAO {
 				return recipeList;
 		}
 	
-			// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ id_scrapï¿½ï¿½ï¿½Ìºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+			// 
 			public boolean deleteScrap(String id, int num) {
 				boolean result = false;
 				try {
@@ -372,14 +375,24 @@ public class ScrapDAO {
 				}
 				return result;
 			}
-	/*
-	String in = select id from ingredient where name='ï¿½ï¿½Ä¡'; ->ï¿½Þ¼Òµï¿½ È£ï¿½ï¿½
-	String rec = select num from recipe where name='ï¿½ï¿½Ä¡ï¿½ï¿½'; -> ï¿½Þ¼Òµï¿½ È£ï¿½ï¿½
-	insert into cook values(?, ?, ?, ?);
-	pstmt.setString(1, in);
-	pstmt.setString(2, rec);
-	pstmt.setString(3, 1); -> form ï¿½ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½
-	pstmt.setString(4, 'ï¿½ï¿½ï¿½ï¿½'); -> form ï¿½ï¿½ ï¿½Þ¾Æ¿ï¿½ï¿½ï¿½
+			// ÂòÇÑ ·¹½ÃÇÇ id_scrapÅ×ÀÌºí¿¡ Á¸ÀçÇÏ´ÂÁö È®ÀÎ
+			// Á¸ÀçÇÏ¸é true  // ¾øÀ¸¸é false
+		public boolean isScrap(String id, int num) {
+			boolean result = false;			
+			try {
+				conn = ConnectionDAO.getConnection();
+				pstmt = conn.prepareStatement("select rec_id from "+id+"_scrap where rec_id=?"); // ±âÁ¸ ÂòÇÑ ·¹½ÃÇÇ È®ÀÎ
+				pstmt.setInt(1, num);
+				rs = pstmt.executeQuery();
+				if(rs.next()) {			// ÀÌ¹Ì °¡Áö°í ÀÖÀ¸¸é
+					result = true;
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				ConnectionDAO.close(rs, pstmt, conn);
+			}
+			return result;
+		}		
 	
-	*/
 }

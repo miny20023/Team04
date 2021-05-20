@@ -23,11 +23,13 @@
 	int pageNum = Integer.parseInt(request.getParameter("pageNum"));
 	String current_url = request.getParameter("current_url");
 	int comment_listNum = Integer.parseInt(request.getParameter("comment_listNum"));
+	int comment_pageNum = Integer.parseInt(request.getParameter("comment_pageNum"));
 	
     article.setReg_date(new Timestamp(System.currentTimeMillis()) );
 
    	CommentDBBean dbPro = new CommentDBBean();
    	int return_comment_pageNum = dbPro.insertArticle_comment(article,comment_listNum);
+   	System.out.println(return_comment_pageNum);
    	if(return_comment_pageNum%10 ==0)
    	{
    		return_comment_pageNum = return_comment_pageNum/10;
@@ -37,6 +39,6 @@
    		return_comment_pageNum = (return_comment_pageNum/10)+1;
    	}
 
-    response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_pageNum="+return_comment_pageNum+"&comment_listNum=0");
+    response.sendRedirect("content.jsp?num="+num+"&pageNum="+pageNum+"&comment_pageNum="+comment_pageNum+"&comment_listNum=0");
 	}
 %>

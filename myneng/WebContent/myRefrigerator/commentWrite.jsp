@@ -11,7 +11,7 @@
 %>
 
 <center>
-<form action="recipeCommentWritePro.jsp" method="post">
+<form action="commentWritePro.jsp" method="post">
 	<textarea rows="5" cols="70" name="comment_text"> </textarea>
 	<input type="hidden" name="comment_id" value="<%=id %>" />
 	<input type="hidden" name="num" value="<%=num %>" />

@@ -2,6 +2,7 @@
 <%@ page import="diet.bean.DietDTO" %>
 <%@ page import="diet.bean.DietDAO" %>
 <%@ include file = "../menu.jsp" %>
+<body bgcolor="#f0efea">
 
 <%request.setCharacterEncoding("UTF-8");%>
 <%
@@ -21,7 +22,7 @@
 
 <form action="dietUpdatePro.jsp?diet_date=<%=diet_date%>" > 
 <table  align ="center" border="1" width="400">
-	<tr>
+	<tr bgcolor="#d6cabc">
 		<td colspan="2" align ="center" height="10%">날짜 : <%=diet.getDiet_date()%><input type="hidden" name="diet_date" value="<%=diet.getDiet_date()%>" /></td>
 	</tr>	
 	<tr>
@@ -52,3 +53,4 @@
 
 
 </form>
+</body>

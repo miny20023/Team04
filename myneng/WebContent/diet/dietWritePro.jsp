@@ -19,10 +19,14 @@ request.setCharacterEncoding("UTF-8");
     	diet.setMonth(diet.getDiet_date());
     	diet.setDay(diet.getDiet_date());
 
+    	//식단 작성된 날 확인 . true시 글 작성가능
     	boolean date_result = dao.dateCheck(diet.getDiet_date(), id);
-
+		//식단 공백 방지 아침,점심,저녁중 하나는 작성되어있어야함
+    	boolean content = (diet.getBreakfast()!=null) ||(diet.getLunch()!=null)||(diet.getDinner()!=null);
+		
+		
     	if(id!=null){
-    		if(diet.getDiet_date()!=null && date_result)
+    		if(diet.getDiet_date()!=null && date_result&& content)
     		{
     			dao.insertDiet(diet,id); 
     			int year=diet.getYear();
@@ -33,19 +37,23 @@ request.setCharacterEncoding("UTF-8");
 				window.location.href='dietCalendar.jsp?year=<%=year%>&month=<%=month%>';
 			</script>
 			<%}
-    		
-    		else{%>
+    		else if(!content){%>
+    		<script>
+    			alert("내용을 입력해 주세요.");
+    			history.go(-1);
+    		</script>
+    			
+    		<%}else{%>
 		<script>
-			alert("날짜를 확인해 주세요.");
+			alert("해당하는 날짜에 이미 식단이 존재합니다. 날짜를 확인해 주세요.");
 			history.go(-1);
 		</script>
 			<%}	
     	}
     	
-    	else
-    	{%>
+    	else{%>
 	<script>
-		alert("로그인이 필요합니다. ")
+		alert("로그인이 필요합니다.")
 		window.location='/myneng/login/login.jsp';
 	</script>
 		<%}%>

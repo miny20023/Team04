@@ -2,6 +2,7 @@
 <%@ page import="diet.bean.DietDTO" %>
 <%@ page import="diet.bean.DietDAO" %>
 <%@ include file = "../menu.jsp" %>
+<body bgcolor="#f0efea">
 
 <%--jsp:include page = "/main/top.jsp" /--%>
 
@@ -19,7 +20,7 @@
 <center><h3><%=diet_date%>일 식단 내용</h3></center>
 
 <table id="viewDay" align ="center" border="1" width="400">
-	<tr>
+	<tr bgcolor="#d6cabc">
 		<td colspan="2" align ="center" height="10%"><%=diet.getDiet_date()%></td>
 	</tr>	
 	<tr>
@@ -49,3 +50,4 @@
 		window.location='/myneng/login/login.jsp';
 		</script>
 <%}%>
+</body>

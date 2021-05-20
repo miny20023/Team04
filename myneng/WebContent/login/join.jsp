@@ -16,12 +16,29 @@
 	function pwrCheck(){
 		var pw=document.joinform.pw.value;
 		var pwr=document.joinform.pwr.value;
-
+		var num = /[0-9]/;
+		var eng = /[a-zA-Z]/;
+		
 		var rpc ="<font color=red>비밀번호가 일치하지 않습니다.</font>" ;
 		if(pwr==pw){
 			rpc="<font color=green>비밀번호가 일치합니다.</font>";
 		}
 		document.getElementById("pwresult").innerHTML=rpc;
+		
+		if(pw.length<4){
+			rpc="<font color=red>비밀번호는 4글자이상 이용가능합니다.</font>";
+		}
+		if(!num.test(pw)){
+			rpc="<font color=red>비밀번호는 숫자를 포함해야 합니다.</font>";
+		}
+		if(!eng.test(pw)){
+			rpc="<font color=red>비밀번호는 영어를 포함해야 합니다.</font>";
+		}
+		if(eng.test(pw)&& num.test(pw) && pw.length>3){
+			rpc="<font color=green>사용가능한 비밀번호 입니다.</font>";
+		}
+		document.getElementById("pwcheck").innerHTML=rpc;
+
 	}
 	
 	function sub(){
@@ -93,14 +110,16 @@ group_pw += alpha.charAt((int) (Math.random() * alpha.length()));
 	
 	
 %>
-
+ <br /> <br />  <br />
+ 
+<center><h1>회원가입</h1></center>
 	
 <%-- form name="joinform" action ="memberInsertPro.jsp" method="post" onsubmit="return joinCheck();" --%>
 <form name="joinform" action ="joinPro.jsp" method="post" onsubmit="return sub();" >
 
 <input type="hidden" name="group_pw" value="<%=group_pw%>" />
 
-<table >
+<table align="center" >
 
 <tr>
 <td>아이디</td>
@@ -114,12 +133,12 @@ group_pw += alpha.charAt((int) (Math.random() * alpha.length()));
 
 <tr>
 <td>비밀번호</td>
-<td><input type ="password" name="pw" placeholder="4글자 이상, 숫자 포함" onchange="pwrCheck()"/></td>
+<td><input type ="password" name="pw" placeholder="4글자 이상,영어,숫자 포함" onchange="pwrCheck()"/><label id="pwcheck"></label></td>
 </tr>
 
 <tr>
 <td>비밀번호 확인</td>
-<td><input type ="password" name="pwr"  placeholder="4글자 이상, 숫자 포함"  onchange="pwrCheck()"/><label id="pwresult"></label></td>
+<td><input type ="password" name="pwr"  placeholder="4글자 이상,영어,숫자 포함"  onchange="pwrCheck()"/><label id="pwresult"></label></td>
 </tr>
 
 
@@ -147,3 +166,4 @@ group_pw += alpha.charAt((int) (Math.random() * alpha.length()));
 </tr>
 </table>
 </form>
+</body>

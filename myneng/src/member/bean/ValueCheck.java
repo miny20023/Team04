@@ -4,8 +4,7 @@ public class ValueCheck {
 
 	
 	//아이디양식: 4자이상  	
-	//비밀번호 양식 : 8자이상, 숫자+영어
-	//이름 양식 : 2자~20자 
+	//비밀번호 양식 : 4자이상, 숫자+영어
 
 	
 	public boolean charLength(String str, int min) {

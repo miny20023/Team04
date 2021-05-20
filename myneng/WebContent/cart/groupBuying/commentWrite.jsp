@@ -10,6 +10,7 @@
 	int comment_listNum = Integer.parseInt(request.getParameter("comment_listNum"));
 	int num = Integer.parseInt(request.getParameter("num"));
 	int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+	int comment_pageNum = Integer.parseInt(request.getParameter("comment_pageNum"));
 	String current_url = request.getParameter("current_url");
 	String id = (String)session.getAttribute("memId");
 	if(id==null)
@@ -30,6 +31,7 @@
 <input type="hidden" name="current_url" value ="<%=current_url %>">
 <input type="hidden" name="pageNum" value="<%=pageNum %>">
 <input type="hidden" name="comment_listNum" value="0">
+<input type="hidden" name="comment_pageNum" value=<%=comment_pageNum %>>
 <textarea cols = "70" rows "10" name="comment_text"></textarea>
 <input type="submit" value="댓글 등록"></br>
 </form>

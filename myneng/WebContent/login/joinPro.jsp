@@ -17,29 +17,27 @@
 	dto.setGroup_id(dto.getId());
 	dto.setScrap_id(dto.getId());
 	
-	//id 3글자 이상, DB중복X 
+		//id 3글자 이상, DB중복X 
 		boolean idResult = vc.charLength(dto.getId(),3)&&dao.idCheck(dto.getId());
 		 
 		String pw = dto.getPw(); 
-	
 		//비밀번호 유효성검사
+		//영어 포함, 숫자포함, 4글자이상
+		boolean pw0 =vc.charEng(pw);
 		boolean pw1 =vc.charNum(pw);
 		boolean pw2 =vc.charLength(pw,4);
-
-		boolean pwResult = (pw1&&pw2);	
-		//pw 4글자이상 & 숫자포함 
+		boolean pwResult = (pw0&&pw1&&pw2);	
 		
 		//핸드폰번호 숫자만 입력체크
 		boolean phone1 = vc.numCheck(dto.getPh1()+dto.getPh2()+dto.getPh3()); 
 		boolean phone2 = vc.charLength(dto.getPh1(),3)&&vc.charLength(dto.getPh2(),3)&&vc.charLength(dto.getPh3(),3);
-		
 		boolean phResult = (phone1&phone2);
 				
 		//이메일 중복체크
 		boolean emailResult = dao.emailCheck(dto.getEmail());
 		
 
-		if(pwResult&&phResult&&emailResult){
+		if(idResult&&pwResult&&phResult&&emailResult){
 
 			//회원추가시 테이블 생성 
 			dao.memberInsert(dto);

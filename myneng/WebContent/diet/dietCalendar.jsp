@@ -4,7 +4,15 @@
 <%@ page import ="diet.bean.DietDAO" %>
 <%@ page import="diet.bean.DietDTO" %>
 <%@ include file = "../menu.jsp" %>
-   
+<body bgcolor="#f0efea">
+<style type="text/css">
+th{text-align:center; color:black; font-weight:bold; font-size:20px;}
+td{text-align:left; vertical-align: top;}
+td.sunday{ text-align:center; color:red; font-weight:bold; }
+td.saturday{ text-align:center; color:blue; font-weight:bold; }
+td.etcday{ text-align:center; color:black; font-weight:bold; }
+td.b{ext-align:center;}
+</style>  
 <%
 	DietDAO dao = new DietDAO();
 	DietDTO diet = null;
@@ -33,25 +41,25 @@
 
 <center>
 <form>
-<br><br>
+<br>
 <table id=viewMonth align ="center" border="1" width="1050" cellpadding ="5" cellspacing="0">
 <tr>
-	<th colspan="7">
+	<th colspan="7" bgcolor="#d6cabc">
 	<input type ="button" value="◀이전달" onclick ="location.href='?year=<%=year%>&month=<%=month-1%>'" >
 	 <%=year%>년  <%=month%>월 
 	<input type = "button" value="다음달▶" onclick="location.href='?year=<%=year%>&month=<%=month+1%>'" >
 	</th>
-	<tr>
-		<td class="sunday">일</td>
-		<td class="etcday">월</td>
-		<td class="etcday">화</td>
-		<td class="etcday">수</td>
-		<td class="etcday">목</td>
-		<td class="etcday">금</td>
-		<td class="saturday">토</td>	
+	<tr bgcolor="#d6cabc">
+		<td class="sunday" width="150">일</td>
+		<td class="etcday" width="150">월</td>
+		<td class="etcday" width="150">화</td>
+		<td class="etcday" width="150">수</td>
+		<td class="etcday" width="150">목</td>
+		<td class="etcday" width="150">금</td>
+		<td class="saturday" width="150">토</td>	
 	</tr>
 	<!-- 날짜 넣기 -->
-	<tr>
+	<tr height="100">	
 <%
 	//첫날이 무슨요일인지 알아보기
 	int first = DietCalendar.weekDay(year,month,1);
@@ -76,15 +84,15 @@
 			switch(DietCalendar.weekDay(year,month,i)){
 			//일:0 월:1 화:2 수:3 목:4 금:5 토:6 
 				case 0:
-					%><td class='sunday' onclick="location.href='dietCalendarPro.jsp?diet_date=<%=diet_date%>'" style='cursor:pointer;'><%
+					%><td class='sun' onclick="location.href='dietCalendarPro.jsp?diet_date=<%=diet_date%>'" style='cursor:pointer;'><%
 					out.println(i+"<br />");
 					break;
 				case 6:
-					%><td class='saturday' onclick="location.href='dietCalendarPro.jsp?diet_date=<%=diet_date%>'" style='cursor:pointer;'><%					
+					%><td class='sat' onclick="location.href='dietCalendarPro.jsp?diet_date=<%=diet_date%>'" style='cursor:pointer;'><%					
 					out.println(i+"<br />");
 					break;
 				default :
-					%><td class='ectday' onclick="location.href='dietCalendarPro.jsp?diet_date=<%=diet_date%>'" style='cursor:pointer;'><%	
+					%><td class='ect' onclick="location.href='dietCalendarPro.jsp?diet_date=<%=diet_date%>'" style='cursor:pointer;'><%	
 					out.println(i+"<br />");
 					break;
 			}
@@ -115,23 +123,23 @@
 	</tr>
 	
 	<tr border ="0">
-		<td colspan="7" align ="center">
-			<input type = "button" value="식단작성하기"  onclick="window.location='dietWriteForm.jsp'" />
+		<td colspan="7">
+			<input type = "button" class="b" value="식단작성하기"  onclick="window.location='dietWriteForm.jsp'" />
 			<%-- input type = "button" value="식단목록"  onclick="window.location='dietList.jsp'" />--%>
 		</td>
 	</tr>
 		
 </table>
 </form>
-</center>
-<%--
+
+
 <form action = "dietSearch.jsp">
-식단 : <input type="text" name="diet_search" /><input type="button" value="검색" />
+식단 : <input type="text" name="diet_search" /><input type="submit" value="검색" />
 
 </form>
- --%>
 
+</center>
 
-
+</body>
 
 

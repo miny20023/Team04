@@ -10,20 +10,20 @@
 	
 	// 경고 메시지
 	String alert = "변경 사항이 없습니다!";
-	String insertInfo ="";
+	String insertInfo ="";			// 추가 될 재료 정보
 
 	// memId 가져오기
 	String memId = (String)session.getAttribute("memId");
-	if (memId == null || memId.trim().isEmpty()) {%>
+	if (memId == null || memId == "") {%>
 		<script>
 			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
-			window.location="/myneng/menu.jsp"
+			window.location="<%=request.getContextPath()%>/menu.jsp"
 		</script>
 		<%
     }
 	
 	// tempIngList 호출
-	List tempIngList = (List) session.getAttribute("tempIngList");
+	List<MaNengDataBean> tempIngList = (List)session.getAttribute("tempIngList");
 	
 	// DAO 선언
 	MaNengDBBean mnDB = new MaNengDBBean(); 
@@ -63,7 +63,7 @@
 							ing.setAmount(getAmount);
 							ing.setUnit(getUnit);
 							ing.setFreshness(getFreshness);
-							tilCheck = false;
+							tilCheck = false;					// isEmpty() 사용 생각
 						}
 					}
 					if(tilCheck){
@@ -79,7 +79,7 @@
 					}
 				}else{
 					MaNengDataBean ing = new MaNengDataBean();
-					tempIngList = mnDB.getIngs(getName);
+					tempIngList = mnDB.getIng(getName);
 					ing = (MaNengDataBean)tempIngList.get(0);
 					ing.setCheck("true");
 					ing.setAmount(getAmount);
@@ -90,11 +90,7 @@
 			}
 		}
 	}  
-  
-    for (int i = 0 ; i < tempIngList.size() ; i++) {	
-		MaNengDataBean ing = (MaNengDataBean)tempIngList.get(i);	// 총 재료 순서 고정임을 이용
-	}
-    
+     
 	try{
 		if(tempIngList!=null){										// list 유효성 검사
 			for (int i = 0 ; i < tempIngList.size() ; i++) {	
@@ -132,5 +128,10 @@
 %>
 <script type="text/javascript">
 	alert("<%=insertInfo%>"+"<%=alert%>");
-	window.location="insert.jsp";
+	var goCheck = confirm("냉장고를 확인하시겠습니까?")
+	if(goCheck) {
+		window.location="update.jsp";
+	}else{
+		window.location="insert.jsp";
+	}
 </script>

@@ -10,11 +10,11 @@
 <jsp:setProperty name="recipeComment" property="*" />
 
 <% 
+	System.out.println("여기는 되니?");
 	String id = (String) session.getAttribute("memId");
 	int num = Integer.parseInt(request.getParameter("num"));
 	int pageNum = Integer.parseInt(request.getParameter("pageNum"));
 	int comment_listNum = Integer.parseInt(request.getParameter("comment_listNum"));
-	System.out.println("recipeCommentWritePro의 comment_listNum = "+comment_listNum);
 	
 	recipeComment.setReg_date(new Timestamp(System.currentTimeMillis()));
 	String alert = "댓글을 입력해주세요.";
@@ -29,10 +29,8 @@
 		}
 		alert = "댓글이 입력되었습니다.";
 	}
-	
-	
 %>
 <script>
 	alert('<%=alert%>');
-	window.location="recipeContentForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=0";
+	window.location="recipe.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=0";
 </script>

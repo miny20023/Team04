@@ -111,7 +111,7 @@ public class MemberDAO {
 					+"id      NUMBER PRIMARY KEY,"
 				    +"rec_id  NUMBER,"
 				    +"FOREIGN KEY (rec_id) "
-				    +"REFERENCES recipe ( num ))";					;
+				    +"REFERENCES recipe ( num ))";					
 			pstmt = conn.prepareStatement(sql);
 			pstmt.executeQuery();
 			
@@ -139,7 +139,7 @@ public class MemberDAO {
 		try {
 			conn=ConnectionDAO.getConnection();
 			String sql= "create table "+id+"_diet("
-						+"diet_date date,"
+						+"diet_date VARCHAR2(300),"
 						+ "breakfast  VARCHAR2(500),"
 						+ "lunch VARCHAR2(500),"
 						+ "dinner VARCHAR2(500),"
@@ -153,7 +153,7 @@ public class MemberDAO {
 	}
 	
 	
-	//---------추가된부분 2021-05-13 1차 통합이후 시작--------------------------------
+
 	//가입시 이메일 중복검사 (아이디, 비밀번호 검색시 이메일값을 받기위해서 중복x)
 	public boolean emailCheck(String email) {
 		boolean result = true;//email 사용가능
@@ -211,8 +211,7 @@ public class MemberDAO {
 		
 		
 		
-	//---------추가된부분 2021-05-13 1차 통합이후  끝--------------------------------
-
+	
 	
 	
 	//

@@ -12,28 +12,13 @@
 	// 인코딩
 	request.setCharacterEncoding("UTF-8");
 
+	//memId 호출
+	String memId = (String)session.getAttribute("memId");
+
 	//search 값 가져오기
 	String search = request.getParameter("search");
 	String se = "";
-	if(search == null || search.trim().isEmpty()){%>
-		<script>
-			alert("검색어가 입력되지 않았습니다.");
-		</script>
-		<%
-	}else{
-		se = URLEncoder.encode(search, "UTF-8");
-	}
 
-	// memId 호출
-	String memId = (String)session.getAttribute("memId");
-	if (memId == null || memId.trim().isEmpty()) {%>
-		<script>
-			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
-			window.location="/myneng/menu.jsp"
-		</script>
-		<%
-	}
-	
 	// 임의 페이지수 게시글 수 정의
 	int pageSize = 10;
 	
@@ -48,27 +33,42 @@
     int endRow = currentPage * pageSize;				// 현재 페이지 마지막 줄 수
     int count = 0;										// 재료 수
     int number = 0;										// 재료 순번
-    boolean c = false;
     
  	// inglist 호출
-    List ingList = null;
+    List<MaNengDataBean> ingList = null;
+ 	int listSize = 0;
 	MaNengDBBean mnDB = new MaNengDBBean();
-	if(search == null || search.trim().isEmpty()){
-		count = mnDB.getRefCount(memId+"_refrigerator");						
-	    if(count>0){
-	    	 ingList = mnDB.getRefs(memId+"_refrigerator", startRow, endRow);
-	    }
+	if (memId == null || memId.trim().isEmpty()) {%>
+		<script>
+			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
+			window.location="<%=request.getContextPath()%>/menu.jsp"
+		</script>
+		<%
 	}else{
-		count = mnDB.getRefCount(memId+"_refrigerator", search);
-	    if(count>0){
-	    	 ingList = mnDB.getRefs(memId+"_refrigerator", search, startRow, endRow);
+		if(search == null || search.trim().isEmpty() || search.equals("null")){%>
+			<script>
+				alert("검색어가 입력되지 않았습니다.");
+			</script>
+		<%
+			count = mnDB.getRefCount(memId+"_refrigerator");
+		    if(count>0){
+		    	 ingList = mnDB.getRefs(memId+"_refrigerator", startRow, endRow);
+		    	 listSize = ingList.size();
+		    }
+		}else{
+			se = URLEncoder.encode(search, "UTF-8");
+			count = mnDB.getRefCount(memId+"_refrigerator", search);
+		    if(count>0){
+		    	 ingList = mnDB.getRefs(memId+"_refrigerator", search, startRow, endRow);
+		    	 listSize = ingList.size();
+		    }
+		}
 	}
-    
     // list session 선언
     session.setAttribute("ingList", ingList);
  
  	// tempIngList 설정
-    List tempIngList = null;
+    List<MaNengDataBean> tempIngList = null;
   	tempIngList = (List) session.getAttribute("tempIngList"); // set 하는곳이 어디야? 
   	session.setAttribute("tempIngList", tempIngList);
   			
@@ -129,7 +129,7 @@
 					}
 				}else{
 					MaNengDataBean ing = new MaNengDataBean();
-					tempIngList = mnDB.getIngs(getName);
+					tempIngList = mnDB.getIng(getName);
 					ing = (MaNengDataBean)tempIngList.get(0);
 					ing.setCheck("true");
 					ing.setAmount(getAmount);
@@ -140,26 +140,28 @@
 			}
 		}
 	}  
-   
     number=count-(currentPage-1)*pageSize; 
 %>
+<input type = "hidden" id = "testNum" value = "<%=testNum%>">
+<input type = "hidden" id = "listSize" value = "<%=listSize%>">
+<input type = "hidden" id = "setSearch" value = "<%=search%>">
 <div class="center">
 <form name="f2" action="updatePro.jsp" method="post">
 <input type="hidden" id="search" name="search">
 <input type="text" id="keyword" /><input type="submit" value="검색" onclick="javascript:goSearch()"><br/>
 <table> 
 	<tr> 
-		<td>추가</td>
-		<td>재료명</td> 
-	    <td>수량</td>
-	    <td>단위</td>
-	    <td>유통기한</td>        
+		<td class = "name">재료명</td> 
+	    <td class = "amount">수량</td>
+	    <td class = "unit">단위</td>
+	    <td class = "freshness">유통기한</td>
+	    <td class = "check">추가</td>     
     </tr>
 </table>    
 <%
 if(search!=null){
 	if(ingList!=null){
-if (count == 0) {%>
+		if (count == 0) {%>
 <table>
 	<tr>
    		<td colspan="5">
@@ -167,30 +169,27 @@ if (count == 0) {%>
    		</td>
    	</tr>
 </table>
-<%}else{	
-	// 총 재료 수만큼 반복
-	for (int i = 0 ; i < ingList.size() ; i++) {		
-		MaNengDataBean ing = (MaNengDataBean)ingList.get(i);
+			<%}else{	
+				// 총 재료 수만큼 반복
+				for (int i = 0 ; i < ingList.size() ; i++) {		
+					MaNengDataBean ing = (MaNengDataBean)ingList.get(i);
 %>
 <table>
 	<tr>
-		<td>
-		<input type="checkbox" id="ch<%=ing.getIng_id()%>" name="check<%=ing.getIng_id()%>" value="true" onclick="return check(<%=ing.getIng_id()%>);" >
-		</td>
-    	<td>
+    	<td class = "name">
     	<%=ing.getIngname()%>
     	<input type="hidden" id="hiddenName<%=ing.getIng_id()%>" value="<%=ing.getIngname()%>" >
     	<input type="hidden" name="hiddenIDs[]" value="<%=ing.getIng_id()%>">
     	</td>
-    	<td>
-    	<button type="button" onclick="javascript:add(<%=ing.getIng_id()%>);" >+</button>
+    	<td class = "amount">
+    	<button id = "plus<%=ing.getIng_id()%>" type="button" onclick="javascript:add(<%=ing.getIng_id()%>);" >+</button>
     	<input type="text" id="outputAmount<%=ing.getIng_id()%>" name="amount<%=ing.getIng_id()%>" size ="1" value="<%=ing.getAmount()%>">
-    	<button type="button" onclick="javascript:subtract(<%=ing.getIng_id()%>);">-</button>
+    	<button id = "minus<%=ing.getIng_id()%>" type="button" onclick="javascript:subtract(<%=ing.getIng_id()%>);">-</button>
     	</td>
-    	<td>
+    	<td class = "unit">
     	<input type="hidden" id="hiddenUnit<%=ing.getIng_id()%>" value="<%=ing.getUnit()%>">
     	<select id ="outputUnit<%=ing.getIng_id()%>" name="unit<%=ing.getIng_id()%>" >
-		<option value="check">단위선택</option>
+		<option>단위선택</option>
 		<option value="g">g</option>
 		<option value="ml">ml</option>
 		<option value="cm^3">cm^3</option>
@@ -198,20 +197,23 @@ if (count == 0) {%>
 		<option value="마리">마리</option>
 		</select>
 		</td>
-    	<td>
+    	<td class = "freshness">
     	<input type="text" id = "outputFreshness<%=ing.getIng_id()%>" name="freshness<%=ing.getIng_id()%>" value="<%=ing.getFreshness()%>">
     	</td>
+    	<td class = "check">
+		<input type="checkbox" id="ch<%=ing.getIng_id()%>" name="check<%=ing.getIng_id()%>" value="true" onclick="return check(<%=ing.getIng_id()%>);" >
+		</td>
 	</tr>
 </table>
-<%}}}else{%>
-<table> 
-<tr>
-	<td colspan="5">
- 		검색하신 [<%=search%>]를 찾지 못합니다.
-	</td>
-</tr>
-</table>
-<%}}else{%> 
+<%				}
+			}
+	}else{%>
+		<script>
+			alert("<%=memId%>님의 냉장고를 불러오기를 실패했습니다");
+			window.history.go(-1);
+		</script>
+<%}
+}else{%> 
 <table> 
 <tr>
 	<td colspan="5">
@@ -223,24 +225,26 @@ if (count == 0) {%>
 <button type="button" onclick="javascript:insertCheck();">재료 추가</button>
 <button type="button" onclick="javascript:updateCheck();">재료 수정</button>
 <button type="button" onclick="javascript:removeCheck();">꺼내기</button>
-<button type="button" onclick="javascript:recipeCheck();">레시피 추천</button></br>
+<button type="button" onclick="javascript:recipeCheck();">레시피 추천</button><br/>
 <%
 if (count > 0) {
 	int pageCount = count / pageSize + ( count % pageSize == 0 ? 0 : 1);
 	int startPage = (int)(currentPage/10)*10+1;
 	int pageBlock = 10;
 	int endPage = startPage + pageBlock-1;
-	if (endPage > pageCount) {endPage = pageCount;}      
+	if (endPage > pageCount) {
+		endPage = pageCount;
+	}      
 	if (startPage > 10) {%>
-
-<a href="javascript:page(<%= startPage - 10 %>);">[이전]</a>
- <%}
-for (int i = startPage ; i <= endPage ; i++) {  %>
-<a href="javascript:page(<%=i%>)";>[<%=i%>]</a>
- <%}
-if (endPage < pageCount) {  %>
-<a href="javascript:page(<%= startPage + 10 %>)">[다음]</a>
-<%}}%>
+		<a href="javascript:page(<%= startPage - 10 %>);">[이전]</a>
+	<%}
+	for (int i = startPage ; i <= endPage ; i++) {  %>
+		<a href="javascript:page(<%=i%>);">[<%=i%>]</a>
+	<%}
+	if (endPage < pageCount) {  %>
+		<a href="javascript:page(<%= startPage + 10 %>);">[다음]</a>
+	<%}
+}%>
 <input type="hidden" id="test" name="test">
 <input type="hidden" id="pageNum" name="pageNum">
 </form>
@@ -250,7 +254,9 @@ if (endPage < pageCount) {  %>
 var checkedVar = new Array();
 var ids = [];
 var fields = document.getElementsByName("hiddenIDs[]");
-var search = "<%=search%>";
+var search = document.getElementById("setSearch").value;
+var listSize = document.getElementById("listSize").value;
+var testNum = document.getElementById("testNum").value;
 
 if(search != null){
 	document.getElementById("keyword").value = search;
@@ -261,8 +267,8 @@ for(var i = 0; i < fields.length; i++){
 	ids.push(fields[i].value);
 }
 
-if(<%=ingList.size()%>!=null){
-	for (let i = 0 ; i < <%=ingList.size()%> ; i++) {
+if(listSize != null){
+	for (let i = 0 ; i < listSize ; i++) {
 		for(let j = 0; j < document.getElementById("outputUnit"+ids[i]).length; j++){
 			if(document.getElementById("outputUnit"+ids[i])[j].value == document.getElementById("hiddenUnit"+ids[i]).value){
 				document.getElementById("outputUnit"+ids[i])[j].selected = true;
@@ -275,9 +281,17 @@ if(<%=ingList.size()%>!=null){
 }
 
 if(document.getElementById("setId0")!=null){
-	for(let i = 0; i < <%=testNum%>; i++) {
+	for(let i = 0; i < testNum; i++) {
 		var array = new Array();
 		var id = document.getElementById("setId"+i).value;
+		var chName = document.getElementById("hiddenName"+id);
+		var chAmount = document.getElementById("outputAmount"+id);
+		var chUnit = document.getElementById("outputUnit"+id);
+		var chFreshness = document.getElementById("outputFreshness"+id);	
+		var plus = document.getElementById("plus"+id);	
+		var minus = document.getElementById("minus"+id);	
+		var chCheck = document.getElementById("ch"+id)
+		
 		array.push(id);
 		array.push(document.getElementById("setName"+i).value);
 		array.push(document.getElementById("setAmount"+i).value);
@@ -285,22 +299,35 @@ if(document.getElementById("setId0")!=null){
 		array.push(document.getElementById("setFreshness"+i).value);
 		checkedVar.push(array);
 		
-		if(document.getElementById("ch"+id)){
-			document.getElementById("ch"+id).checked = true;
-			document.getElementById("outputAmount"+id).value = document.getElementById("setAmount"+i).value;
-			document.getElementById("outputFreshness"+id).value = document.getElementById("setFreshness"+i).value;
-			for(let j = 0; j < document.getElementById("outputUnit"+id).length; j++){
-				if(document.getElementById("outputUnit"+id)[j] == document.getElementById("setUnit"+i).value){
-					document.getElementById("outputUnit"+id)[j].selected = true;
+		if(chCheck){
+			chCheck.checked = true;
+			chAmount.value = document.getElementById("setAmount"+i).value;
+			chFreshness.value = document.getElementById("setFreshness"+i).value;
+			for(let j = 0; j < chUnit.length; j++){
+				if(chUnit[j].value == document.getElementById("setUnit"+i).value){
+					chUnit[j].selected = true;
 				}
 			}
+			chAmount.disabled = true;
+			chUnit.disabled = true;
+			chFreshness.disabled = true;
+			plus.disabled = true;
+			minus.disabled = true;
 		}
 	}
 	document.getElementById("test").value = checkedVar;
 }
 
 function goSearch(){
-	document.getElementById("search").value = document.getElementById("keyword").value;
+	var key = document.getElementById("keyword").value;
+	
+	document.getElementById("search").value = key;
+	
+	if(key == null || key == ""){
+		alert("검색어가 입력되지 않았습니다!")
+		document.f2.action = "update.jsp";
+		document.f2.submit();
+	}
 }
 
 function page(pageNum){
@@ -364,7 +391,10 @@ function check(ingId){
 	var chAmount = document.getElementById("outputAmount"+ingId);
 	var chUnit = document.getElementById("outputUnit"+ingId);
 	var chFreshness = document.getElementById("outputFreshness"+ingId);	
-
+	var plus = document.getElementById("plus"+ingId);	
+	var minus = document.getElementById("minus"+ingId);	
+	var chCheck = document.getElementById("ch"+ingId)
+	
 	for(let i = 0; i < checkedVar.length; i++) {
 		var newArray = checkedVar[i];
 		var verId = newArray[0];
@@ -388,6 +418,21 @@ function check(ingId){
 				newArray.push(chFreshness.value);
 				checkedVar[checkedVar.length] = newArray;
 				document.getElementById("test").value = checkedVar;
+				
+				if(chCheck.checked){
+					chAmount.disabled = true;
+					chUnit.disabled = true;
+					chFreshness.disabled = true;
+					plus.disabled = true;
+					minus.disabled = true;
+				}else{
+					chAmount.disabled = false;
+					chUnit.disabled = false;
+					chFreshness.disabled = false;
+					plus.disabled = false;
+					minus.disabled = false;
+				}
+				
 				alert(chName.value + "이/가 체크 되었습니다");				
 				return true;
 			}else{

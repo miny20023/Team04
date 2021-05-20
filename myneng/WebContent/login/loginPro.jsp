@@ -24,17 +24,19 @@
 		Cookie coo_id = new Cookie("cooId",dto.getId());
 		Cookie coo_pw = new Cookie("cooPw",dto.getPw());
 		
+	
+
+
 		//체크가 안되어있으면 쿠키삭제
 		if(remid==null){
 			coo_id.setMaxAge(0);
 			coo_pw.setMaxAge(0);}
+		
 		if(rempw==null){coo_pw.setMaxAge(0);}
-		response.addCookie(coo_id);// 사용자에게 전달
-		response.addCookie(coo_pw);// 사용자에게 전달
-
-
 		/////////////////
 		
+		response.addCookie(coo_id);// 사용자에게 전달
+		response.addCookie(coo_pw);// 사용자에게 전달
 		
 		response.sendRedirect("/myneng/main.jsp");	
 	

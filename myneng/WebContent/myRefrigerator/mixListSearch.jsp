@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.List" %>
+<%@ page import = "java.net.URLEncoder" %>
 <%@ page import="test.model.food.RecipeDTO" %>
 <%@ page import="test.model.food.RecipeDAO" %>
 <%@ include file = "../menu.jsp" %>
@@ -21,6 +22,15 @@
 		<%
 	}
 	
+	// 검색 컬럼 가져오기
+	String col = request.getParameter("col");
+	System.out.println("col 값 : "+col);
+	
+	//search 값 가져오기
+	String search = request.getParameter("search");
+	String se = "";
+	System.out.println("search 값 : "+search);
+	
 	// random_id 세션 있으면 삭제
 	if(session.getAttribute("random_id") != null){
 		session.removeAttribute("random_id");			
@@ -28,17 +38,6 @@
 	
 	int pageSize = 10; 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	
-	if(session.getAttribute("url") != null){
-		session.removeAttribute("url");
-	}
-	if(session.getAttribute("url") == null ){
-		String url = request.getRequestURL().toString();
-		if(request.getQueryString() != null){
-			url = url + "?" + request.getQueryString();
-		}
-		session.setAttribute("url", url);
-	}
 	
 	// 페이지 유효성 검사
 	String pageNum = request.getParameter("pageNum");
@@ -66,17 +65,31 @@
 		</script>
 	<%
 	}else{
-		count = dao.getRecipeCount(recList, master, memId); 	// 작성된 게시글 숫자
-		if(count > 0){
-			recipeList = dao.getRecipes(recList, startRow, endRow, master, id);
+		if(search == null || search.trim().isEmpty() || search.equals("null")){%>
+		<script>
+			alert("검색어가 입력되지 않았습니다.");
+		</script>
+		<%
+			count = dao.getRecipeCount(recList, col, search, master, memId); 	// 작성된 게시글 숫자
+			if(count > 0){
+				recipeList = dao.getRecipes(recList, col, startRow, endRow, master, id);
+			}
+		}else{
+			se = URLEncoder.encode(search, "UTF-8");
+			count = dao.getRecipeCount(recList, col, search, master, memId); 	// 작성된 게시글 숫자
+			if(count > 0){
+				recipeList = dao.getRecipes(recList, col, search, startRow, endRow, master, id);
+			}
 		}
 	}
 	
 	number = count-(currentPage-1)*pageSize;
 %>
+<input type = "hidden" id = "setCol" value = "<%=col%>">
+<input type = "hidden" id = "setSearch" value = "<%=search%>">
 <div class = "center">
 <form name="f2" action="mixListSearch.jsp" method="post" >
-	<select name="col">
+	<select id = "col" name="col">
 		<option value="name||process||writer">전체</option>
 		<option value="name">요리명</option>
 		<option value="process">요리과정</option>
@@ -140,21 +153,43 @@ if (count > 0) {
 		<a href="javascript:page(<%= startPage + 10 %>);">[다음]</a>
 	<%}
 }%>
+<input type="hidden" id="comment_listNum" name="comment_listNum">
 <input type="hidden" id="currentPage" name="currentPage" value = "<%=currentPage%>">
-<input type="hidden" id="pageNum" name="pageNum" value = "<%=pageNum %>">
+<input type="hidden" id="pageNum" name="pageNum" value = "<%=pageNum%>">
 <input type="hidden" id="num" name="num">
 <input type="hidden" id="random_id" name="random_id">
-<input type="hidden" id="comment_listNum" name="comment_listNum">
 </form>
 </div>
 </body>
 <script>
+var search = document.getElementById("setSearch").value;
+var setCol = document.getElementById("setCol").value;
+
+if(search != null){
+	document.getElementById("keyword").value = search;
+	document.getElementById("search").value = search;
+}
+
+for(let j = 0; j < document.getElementById("col").length; j++){
+	if(document.getElementById("col")[j].value == setCol){
+		document.getElementById("col")[j].selected = true;
+	}
+}
+
 function goSearch(){
-	document.getElementById("search").value = document.getElementById("keyword").value;
+	var key = document.getElementById("keyword").value;
+	
+	document.getElementById("search").value = key;
+	
+	if(key == null || key == ""){
+		alert("검색어가 입력되지 않았습니다!")
+		document.f2.action = "mixList.jsp";
+		document.f2.submit();
+	}
 }
 
 function page(pageNum){
-	document.f2.action = "mixList.jsp";
+	document.f2.action = "mixListSearch.jsp";
 	document.getElementById("pageNum").value = pageNum;
 	document.f2.submit();
 }
@@ -163,7 +198,7 @@ function goRecipe (recipeNum){
 	document.f2.action = "recipe.jsp";
 	document.getElementById("random_id").value = "0";
 	document.getElementById("num").value = recipeNum;
-	document.getElementById("comment_listNum").value = "0";
+	document.getElementById("comment_listNum").value = "0"
 	document.f2.submit();
 }
 </script>

@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ include file = "../menu.jsp" %>
-
+<body bgcolor="#f0efea">
 <%	
 
  String diet_date = (String)request.getParameter("diet_date");		
@@ -16,14 +16,14 @@ if(diet_date !=null) {
 <br /><br /><br /><br />
 
 <%if(id!=null){ %>
-<center>식단 작성</center>
+<center><h3>식단 내용 작성하기</h3></center>
 
 <form action="dietWritePro.jsp">
 
 
 <table id=view1  align ="center" border="1" width="400">
-	<tr>
-		<td colspan="2" align ="center" height="10%">날짜 <input type="date" name="diet_date" value="<%=diet_date%>" ></td>
+	<tr bgcolor="#d6cabc">
+		<td colspan="2" align ="center" height="10%" >날짜 <input type="date" name="diet_date" <%if(diet_date!=null){ %>value="<%=diet_date%>"<%}%> ></td>
 	</tr>
 	
 	<tr>
@@ -50,3 +50,4 @@ if(diet_date !=null) {
 		window.location='/myneng/login/login.jsp';
 	</script>
 <%}%>
+</body>

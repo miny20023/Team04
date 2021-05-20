@@ -14,10 +14,10 @@
 
 	//memId 가져오기
 	String memId = (String)session.getAttribute("memId");
-	if (memId == null || memId.trim().isEmpty()) {%>
+	if (memId == null || memId.trim().isEmpty() || memId.equals("null")) {%>
 		<script>
 			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
-			window.location="/myneng/menu.jsp"
+			window.location="<%=request.getContextPath()%>/menu.jsp"
 		</script>
 		<%
 	}				
@@ -26,14 +26,19 @@
 	MaNengDBBean mnDB = new MaNengDBBean();
 	
 	// tempIngList 호출
-	List tempIngList = (List) session.getAttribute("tempIngList");
+	List<MaNengDataBean> tempIngList = (List) session.getAttribute("tempIngList");
 	
 	// test(전 페이지 값) 호출
 	String test = request.getParameter("test");
+	
+	// test 반복 회수
 	int testNum = 0;
-	if(test!=null){
-		String [] testArray = test.split(",");
-		String getId="",getName="",getAmount="",getUnit="",getFreshness="";
+	
+	// test 값 list로 호출
+	if(test!=null){			// test 유효성 검사
+		String [] testArray = test.split(",");			// String test를 split을 통해 String 배열로 선언
+		String getId="",getName="",getAmount="",getUnit="",getFreshness="";			// 각 변수들 선언
+	// 5개의 변수가 반복 될 때마다 tempIngList에 값 입력 
 		for(int i = 0; i < testArray.length; i++){
 			switch(i%5){
 			case 0 :
@@ -52,13 +57,14 @@
 				getFreshness = testArray[i];
 				break;
 			}
+	// tempIngList에서의 값 확인 후 list 입력
 			if(i%5==4) {	
-				if(tempIngList != null){
+				if(tempIngList != null){			// tempIngList 유효성 검사
 					MaNengDataBean ing = new MaNengDataBean();
-					boolean tilCheck = true;
+					boolean tilCheck = true;			// list의 값이 없을 때 'true'
 					for(int j = 0; j < tempIngList.size(); j++){
 						ing = (MaNengDataBean)tempIngList.get(j);
-						if(ing.getIngname().equals(getName)){			
+						if(ing.getIngname().equals(getName)){	
 							ing.setCheck("true");
 							ing.setAmount(getAmount);
 							ing.setUnit(getUnit);
@@ -78,7 +84,7 @@
 					}
 					}else{
 						MaNengDataBean ing = new MaNengDataBean();
-						tempIngList = mnDB.getIngs(getName);
+						tempIngList = mnDB.getIng(getName);
 						ing = (MaNengDataBean)tempIngList.get(0);
 						ing.setCheck("true");
 						ing.setAmount(getAmount);

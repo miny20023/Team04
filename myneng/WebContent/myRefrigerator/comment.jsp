@@ -9,7 +9,6 @@
 	String id = (String) session.getAttribute("memId");
 	
 	int comment_listNum = Integer.parseInt(request.getParameter("comment_listNum"));
-	System.out.println("recipeCommentList의 comment_listNum ="+comment_listNum);
 	
 	int num = Integer.parseInt(request.getParameter("num"));
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -51,10 +50,8 @@
 			for(int j = 0; j < recipeComment.getRe_level(); j++){
 				level_space = level_space + "&emsp;" + "&emsp;";		// 들여쓰기
 			}
-			
 	%>		
 			<tr height="50">
-
 				<%if(recipeComment.getComment_text().equals("삭제된 댓글입니다.")){ %>
 					<td colspan="3" width="400">
 					<%=level_space%><%=recipeComment.getComment_text() %></br>
@@ -67,20 +64,17 @@
 					</td>
 					<td align="center" width="50">
 					<%if(comment_listNum != listNum || comment_listNum == 0) { 	//대댓글 작성 창 열림%>
-						<a href="recipeContentForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=<%=listNum %>">댓글달기</a>
+						<a href="recipe.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=<%=listNum %>">댓글달기</a>
 				<%	} else {													//대댓글 작성창 열린 상태에서 클릭 -> 대댓글 작성창 닫힘%>
-						<a href="recipeContentForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=0">댓글달기</a>
+						<a href="recipe.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_listNum=0">댓글달기</a>
 					</td>
 				<%	}%>
 					<td align="center" width="50">
-					<a href="recipeCommentDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_num=<%=comment_num %>" 
-					onclick="window.open(this.href,'댓글삭제','width=350,height=100');return false;">댓글삭제</a>
+					<a href="recipeCommentDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0&comment_num=<%=comment_num %>" onclick="window.open(this.href,'댓글삭제','width=350,height=100');return false;">댓글삭제</a>
 					</td>
 			<%	}	%>
 			</tr>
-		<%	if(comment_listNum == listNum){ 
-				//int comment_num = recipeComment.getComment_num();
-				System.out.println("recipeCommentList의 comment_num ="+comment_num);%>
+		<%	if(comment_listNum == listNum){ %>
 			<tr>
 				<td colspan="3">
 				<form action="recipeCommentWritePro.jsp" method="post">
@@ -98,7 +92,6 @@
 	<%	}
 	} %>
 	</table>
-	
 <%
     if (count > 0) {
         int pageCount = count / pageSize + ( count % pageSize == 0 ? 0 : 1);
@@ -109,13 +102,13 @@
         if (endPage > pageCount) endPage = pageCount;
         
         if (startPage > 10) {    %>
-        <a href="recipeContentForm.jsp?pageNum=<%= startPage - 10 %>&num=<%=num%>&random_id=0&comment_listNum=<%=comment_listNum%>">[이전]</a>
+        <a href="recipe.jsp?pageNum=<%= startPage - 10 %>&num=<%=num%>&random_id=0&comment_listNum=<%=comment_listNum%>">[이전]</a>
 <%      }
         for (int i = startPage ; i <= endPage ; i++) {  %>
-        	<a href="recipeContentForm.jsp?pageNum=<%= i %>&num=<%=num%>&random_id=0&comment_listNum=<%=comment_listNum%>">[<%= i %>]</a>
+        	<a href="recipe.jsp?pageNum=<%= i %>&num=<%=num%>&random_id=0&comment_listNum=<%=comment_listNum%>">[<%= i %>]</a>
 <%		}
         if (endPage < pageCount) {  %>
-        	<a href="recipeContentForm.jsp?pageNum=<%= startPage + 10 %>&num=<%=num%>&random_id=0&comment_listNum=<%=comment_listNum%>">[다음]</a>
+        	<a href="recipe.jsp?pageNum=<%= startPage + 10 %>&num=<%=num%>&random_id=0&comment_listNum=<%=comment_listNum%>">[다음]</a>
         	
 <%		}
     }

@@ -9,7 +9,6 @@
 <%@ page import="java.util.List" %>
 <%@ include file = "../menu.jsp" %>
 <body bgcolor="#f0efea">
-<h1> 찜한 레시피 보기</h1>
 
 <%
 	id = (String) session.getAttribute("memId");
@@ -17,12 +16,12 @@
 	int num = Integer.parseInt(request.getParameter("num"));
 	String pageNum = request.getParameter("pageNum");
 		
-	ScrapDAO dao = new ScrapDAO();
+	ScrapDAO dao = new ScrapDAO(); //ScrapDAO
 	CookDAO daoc = new CookDAO();
 	
 	dao.readCount(num);
 	int memberMaster = dao.getMemberMaster(id);
-	ScrapDTO recipe = dao.getRecipes(num);
+	ScrapDTO recipe = dao.getRecipes(num); //ScrapDTO
 	
 	// 레시피번호 -> cook 테이블에서 재료 번호 찾음 -> 재료 테이블에서 재료 호출 -> 재료 반환
 	List <CookDTO> ingList = daoc.getIng(num); 
@@ -35,7 +34,7 @@
 		if(recipe.getImage() == null){%>
 			사진이 등록되지 않았습니다. <br />
 	<% 	} else{%>
-			<img src="/maneng/recipeSave/<%=recipe.getImage() %>" /> <br />
+			<img src="/myneng/recipeSave/<%=recipe.getImage() %>" /> <br />
 	<%	} %>
 	</td>
 </tr>	
@@ -62,24 +61,35 @@
 	<td align="center"><%=recipe.getDifficulty() %></td>
 </tr>
 <tr>
-	<td colspan="4" align="center"><%=recipe.getProcess() %></td>
+	<td colspan="4"><%=recipe.getProcess().replaceAll("\n", "<br />") %></td>
 </tr>
 </table>
-<%	if(id.equals(recipe.getWriter())){%>
-		<input type="button" value="수  정" onclick="window.location='recipeUpdateForm.jsp?PageNum=<%=pageNum%>&num=<%=num%>'"/>
-		<input type="button" value="삭  제" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>'"/>
-	<%} else{%>
-	<input type="button" value="추  천" onclick="window.location='recipeReccPro.jsp?num=<%=num%>'"/>
-<%		} %>
-<%if(memberMaster == 2){ 
-	if(recipe.getStatus() == 1){%>
-		<input type="button" value="승  인" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=2'" />
-<% 	} else if(recipe.getStatus() == 2){%>
-		<input type="button" value="승인취소" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=1'" />
-<%	} %>	
-<%} else if (memberMaster == 0 && recipe.getStatus() == 2){%>
-	<input type="button" value="찜 해제" onclick="window.location='recipeDeleteScrapPro.jsp?num=<%=num%>'" />
-<%	} %>
+<%	if(id.equals(recipe.getWriter()) && recipe.getStatus() != 0){%>
+		<input type="button" value="수  정" onclick="window.location='recipeUpdateForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&random_id=0'"/>
+	<%} else{
+		if(recipe.getStatus() != 0){%>
+			<input type="button" value="추  천" onclick="window.location='recipeReccPro.jsp?num=<%=num%>'"/>
+<%		}
+	} %>
+<%	if((id.equals(recipe.getWriter()) || memberMaster == 2) && recipe.getStatus() != 0){ %>
+		<input type="button" value="삭  제" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=0'"/>
+<% }%>
+<%	if(memberMaster == 2){ 
+		if(recipe.getStatus() == 0){%>
+			<input type="button" value="삭제취소" onclick="window.location='recipeDeleteForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=1'"/>
+<%		}%>
+<%		if(recipe.getStatus() == 1){%>
+			<input type="button" value="승  인" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=2'" />
+<% 		} else if(recipe.getStatus() == 2){%>
+			<input type="button" value="승인취소" onclick="window.location='recipeAcceptForm.jsp?pageNum=<%=pageNum%>&num=<%=num%>&status=1'" />
+<%		} %>	
+<%	} else if (memberMaster == 0 && recipe.getStatus() == 2){
+		if(!dao.isScrap(id, num)){%>
+			<input type="button" value="  찜  " onclick="window.location='recipeScrapPro.jsp?pageNum=<%=pageNum%>&num=<%=num%>'" /> 
+		<%}else{ %>
+			<input type="button" value="찜해제" onclick="window.location='recipeScrapPro.jsp?pageNum=<%=pageNum%>&num=<%=num%>'" />
+<%		}
+	} %>
 
 <input type="button" value="찜 목록" onclick="window.location='recipeScrapForm.jsp?PageNum=<%=pageNum %>'" />
 

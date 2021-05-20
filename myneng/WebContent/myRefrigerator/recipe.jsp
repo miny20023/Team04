@@ -3,37 +3,60 @@
 <%@ page import="recipe.bean.RecipeDTO" %>
 <%@ page import="recipe.bean.RecipeDAO" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import ="test.model.food.MaNengDBBean" %>
-<%@ page import ="test.model.food.MaNengDataBean" %>
+<%@ page import="cook.bean.CookDAO" %>
+<%@ page import="cook.bean.CookDTO" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.List" %>
-
+<%@ include file = "../menu.jsp" %>
+<link href="form.css" rel="stylesheet" type="text/css">
+<body bgcolor="#f0efea">
 <%
-	String id = (String) session.getAttribute("memId");
+	//인코딩
+	request.setCharacterEncoding("UTF-8");	
 
+	//memId 호출
+	String memId = (String)session.getAttribute("memId");
+	if (memId == null || memId == "") {%>
+		<script>
+			alert("아이디의 세션이 종료 되어\n로그인 화면으로 돌아갑니다.");
+			window.location = "<%=request.getContextPath()%>/menu.jsp";
+		</script>
+		<%
+	}
+	
+	int random_id = Integer.parseInt(request.getParameter("random_id"));
+	if(session.getAttribute("random_id") != null){
+		random_id = (int) session.getAttribute("random_id");
+	}
+	
 	int num = Integer.parseInt(request.getParameter("num"));
+	String comment_listNum = request.getParameter("comment_listNum");
+	
+	String url = (String) session.getAttribute("url");
+	
 	String pageNum = request.getParameter("pageNum");
 		
 	RecipeDAO dao = new RecipeDAO();
-	MaNengDBBean mnDB = new MaNengDBBean();
+	CookDAO daoc = new CookDAO();
 	
-	dao.readCount(num);
-	int status = dao.getMemberMaster(id);
+	dao.readCount(num);										// 해당 게시물 열람했으므로 조회수 1 증가
+	int memberMaster = dao.getMemberMaster(memId);
 	RecipeDTO recipe = dao.getRecipes(num);
 	
-	// 레시피번호 -> cook 테이블에서 재료 번호 찾음 -> 재료 테이블에서 재료 호출 -> 재료 반환
-	// 재료id -> 재료이름 / amount / unit <== 리스트로 받아야하나? 
-	List <MaNengDataBean> ingList = mnDB.getIngs(num); 
+	List <CookDTO> ingList = daoc.getIng(num);  
+	boolean scrap = dao.isScrap(id, num);
 %>
+<div class = "center">
+<form name = "f2">
 <table>
 <tr>
 	<td colspan="4">
 	<%
 		if(recipe.getImage() == null){%>
 			사진이 등록되지 않았습니다. <br />
-	<% 	} else{%>
-			<img src="/MaNeng/save/<%=recipe.getImage()%>" /> <br />
-	<%} %>
+	<% 	}else{%>
+			<img src="<%=request.getContextPath()%>/recipeSave/<%=recipe.getImage() %>" /> <br />
+	<%	} %>
 	</td>
 </tr>	
 <tr>
@@ -45,12 +68,10 @@
 </tr>
 <tr>
 	<td>재료</td>
-	<td>
+	<td colspan="3">
 		<%for(int i = 0; i < ingList.size(); i++){
-			MaNengDataBean ing = (MaNengDataBean) ingList.get(i); %>
-			<%=ing.getIngname() %>
-			<%=ing.getAmount() %>
-			<%=ing.getUnit() %> <br />
+			CookDTO ing = (CookDTO) ingList.get(i); %>
+			<%=ing.getIng_name() %> <%=ing.getAmount() %> <%=ing.getUnit() %> <br />
 		<%} %>
 	</td>
 </tr>
@@ -61,8 +82,51 @@
 	<td><%=recipe.getDifficulty() %></td>
 </tr>
 <tr>
-	<td colspan="4"><%=recipe.getProcess() %></td>
+	<td colspan="4" style = "word-break:breakall"><%=recipe.getProcess() %></td>
 </tr>
 </table>
-<input type="button" value="목  록" onclick="window.location='mixList.jsp?PageNum=<%=pageNum %>'" />
+<input type="button" value="추  천" onclick="javascript:recipeRec();"/>
+<%
+if (memberMaster == 0 && recipe.getStatus() == 2){
+	if(!scrap){%>
+		<input type="button" value="  찜  " onclick="javascript:recipeScrap();" />
+<%	}else{%>
+		<input type="button" value="찜해제" onclick="javascript:recipeScrap();" />
+<%	}
+}%>
+<input type="button" value="목  록" onclick="javascript:recipeReturn();" /><br/>
+<input type="hidden" id = "pageNum" name ="pageNum" >
+<input type="hidden" id = "num" name ="num" value = "<%=num%>">
+<input type="hidden" id = "random_id" name ="random_id" value = "<%=random_id%>">
+<input type="hidden" id = "status" name ="status" value = "<%=recipe.getStatus()%>">
 
+<%if(recipe.getStatus() == 2){ %>
+	<jsp:include page="comment.jsp" >
+		<jsp:param name="num" value="<%=num %>" />  
+		<jsp:param name="comment_listNum" value="<%=comment_listNum%>" />
+	</jsp:include>
+	<jsp:include page="commentWrite.jsp">   
+		<jsp:param name="num" value="<%=num%>" />
+		<jsp:param name="pageNum" value="<%=pageNum%>" />
+		<jsp:param name="comment_listNum" value="<%=comment_listNum%>" />
+	</jsp:include>
+<%	} %>
+</form>
+</div>
+</body>
+<script>
+function recipeRec(){
+	document.f2.action = "<%=request.getContextPath()%>/recipe/recipeReccPro.jsp";
+	document.f2.submit();
+}
+
+function recipeScrap(){
+	document.f2.action = "recipeScrap.jsp";
+	document.f2.submit();
+}
+
+function recipeReturn(){
+	document.f2.action = "mixList.jsp";
+	document.f2.submit();
+}
+</script>
